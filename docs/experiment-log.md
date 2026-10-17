@@ -20,24 +20,26 @@ Protocol: fragment 1 train split, 128 steps, seed 1337, base channels 4, and eve
 |---|---:|---:|---:|---:|
 | Residual 3D U-Net | 5,966 | 0.21207 | 0.21084 | 0.23561 |
 | Kintsugi axial fallback | 6,822 | 0.21139 | 0.21084 | 0.23043 |
-| Kintsugi physical (`PhysicalStem3D` + `SoftSheetUnwarper3D`) | 7,151 | 0.21956 | 0.21084 | 0.32149 |
+| Kintsugi physical (`PhysicalStem3D` + `SoftSheetUnwarper3D`) | 7,151 | 0.21956 | 0.21084 | 0.31613 |
+| Kintsugi physical + Full Physics (Options 1+2+3: `z_jitter=2`, Voronoi crackle, fiber loss) | 7,151 | 0.21650 | 0.21084 | 0.34861 |
 
 The raw-intensity models are at random-ranking level, whereas `kintsugi_physical` achieves a `+0.00872` lift over prevalence in 128 steps. Reports:
 
 - `runs/ablation_residual_128/fragment1_validation_grid.json`
 - `runs/ablation_kintsugi_128/fragment1_validation_grid.json`
 - `runs/ablation_kintsugi_physical_128/fragment1_validation_grid.json`
+- `runs/ablation_kintsugi_physical_full_128/fragment1_validation_grid.json`
 
 The earlier `fragment1_validation.json` reports sampled overlapping patches and are retained only as historical diagnostics.
 
 Frozen-threshold transfer to external fragments:
 
-| External fragment | Prevalence | Residual AP | Kintsugi Physical AP | Residual FP/Mpix | Kintsugi Physical FP/Mpix |
-|---|---:|---:|---:|---:|---:|
-| Fragment 2 | 0.17188 | 0.16755 | 0.17998 | >828,000 | 522,012 |
-| Fragment 3 | 0.15508 | 0.15982 | 0.16486 | >828,000 | 501,610 |
+| External fragment | Prevalence | Residual AP | Kintsugi Physical (Opt 1) AP | Kintsugi Full Physics (Opt 1+2+3) AP | Residual FP/Mpix | Kintsugi Physical FP/Mpix |
+|---|---:|---:|---:|---:|---:|---:|
+| Fragment 2 | 0.17188 | 0.16755 | 0.17998 | **0.18196** | >828,000 | 522,012 |
+| Fragment 3 | 0.15508 | 0.15982 | **0.16486** | 0.16251 | >828,000 | 501,610 |
 
-The raw-intensity residual checkpoint selected threshold `0.15` on fragment 1 and predicted almost every valid pixel as ink on both external fragments (>828,000 FP/Mpix). Adding `PhysicalStem3D` (per-patch Z-score + Holoborodko vertical derivatives + planar crackle residual) and `SoftSheetUnwarper3D` lifted Fragment 2 transfer from below prevalence (`0.16755`) to above prevalence (`0.17998`) and reduced false positives by >300,000 FP/Mpix.
+The raw-intensity residual checkpoint selected threshold `0.15` on fragment 1 and predicted almost every valid pixel as ink on both external fragments (>828,000 FP/Mpix). Adding `PhysicalStem3D` (per-patch Z-score + Holoborodko vertical derivatives + planar crackle residual) and `SoftSheetUnwarper3D` lifted Fragment 2 transfer from below prevalence (`0.16755`) to above prevalence (`0.17998`, and **`0.18196`** when combined with Options 2+3 `z_jitter=2`, Voronoi crackle synthesis, and `AnisotropicFiberSuppressionLoss`) while reducing false positives by >300,000 FP/Mpix.
 
 ## Capacity Check
 
