@@ -1,0 +1,123 @@
+{
+  "calibration": {
+    "brier": 0.34128203988075256,
+    "ece": 0.41212624311447144,
+    "mean_probability": 0.579413652420044,
+    "positive_rate": 0.17187711596488953,
+    "valid_pixels": 7077888
+  },
+  "checkpoint": "runs/ablation_kintsugi_physical_128/smoke_model.ckpt",
+  "device": "mps",
+  "evaluated_samples": 432,
+  "evaluation_sampling": "non_overlapping_grid",
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiPhysicalUNet3DTo2D",
+    "num_classes": 1,
+    "physical_stem": true,
+    "sheet_unwarp": true
+  },
+  "patch_size": [
+    16,
+    128,
+    128
+  ],
+  "ranking": {
+    "average_precision": 0.17997610569000244,
+    "positive_pixels": 1216527,
+    "valid_pixels": 7077888
+  },
+  "requested_samples": 10000,
+  "selected": {
+    "f1": 0.27140458751438656,
+    "fn": 445415,
+    "fp": 3694741,
+    "fp_per_mpix": 522011.7922182437,
+    "precision": 0.17266846893527396,
+    "recall": 0.6338634489822257,
+    "threshold": 0.55,
+    "tn": 2166620,
+    "tp": 771112,
+    "valid_pixels": 7077888
+  },
+  "source": {
+    "data_audit": {
+      "errors": [],
+      "label": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "ground_truth",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment2/inklabels.tif",
+        "sha256": "40633030e58c1fa6aedb2d7cf6dc3dcc201a96f95fe0758ffe2efc38c1c984ce",
+        "shape": [
+          14830,
+          9506
+        ]
+      },
+      "valid_mask": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "valid_mask",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment2/mask.tif",
+        "sha256": "b121a2c27863189439c7185fc7e5285b858fd3dc545c5c57ce80b4dd0138fa3a",
+        "shape": [
+          14830,
+          9506
+        ]
+      },
+      "volume": {
+        "chunks": [
+          16,
+          128,
+          128
+        ],
+        "dtype": "uint16",
+        "metadata_sha256": "f116547f2aec68c2ae4f20dc7fb0093e08d8b7eaf5f4adb72cdfc1951783f7c1",
+        "path": "data/public/kaggle2023_fragment2/volume.zarr",
+        "shape": [
+          16,
+          14830,
+          9506
+        ]
+      },
+      "warnings": []
+    },
+    "data_identity_matches_training": false,
+    "ink": "data/public/kaggle2023_fragment2/inklabels.tif",
+    "mask": "data/public/kaggle2023_fragment2/mask.tif",
+    "split": "validation",
+    "split_manifest": "data/public/kaggle2023_fragment2/split.json",
+    "zarr": "data/public/kaggle2023_fragment2/volume.zarr"
+  },
+  "threshold_metrics": [
+    {
+      "f1": 0.27140458751438656,
+      "fn": 445415,
+      "fp": 3694741,
+      "fp_per_mpix": 522011.7922182437,
+      "precision": 0.17266846893527396,
+      "recall": 0.6338634489822257,
+      "threshold": 0.55,
+      "tn": 2166620,
+      "tp": 771112,
+      "valid_pixels": 7077888
+    }
+  ],
+  "threshold_policy": "frozen"
+}

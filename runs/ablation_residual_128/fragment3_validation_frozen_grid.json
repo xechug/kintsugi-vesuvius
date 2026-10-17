@@ -1,0 +1,115 @@
+{
+  "calibration": {
+    "brier": 0.23178140819072723,
+    "ece": 0.3140379786491394,
+    "mean_probability": 0.46911710500717163,
+    "positive_rate": 0.1550815850496292,
+    "valid_pixels": 2424124
+  },
+  "checkpoint": "runs/ablation_residual_128/smoke_model.ckpt",
+  "device": "mps",
+  "evaluated_samples": 148,
+  "evaluation_sampling": "non_overlapping_grid",
+  "model": {
+    "backend": "convolutional",
+    "base_channels": 4,
+    "in_channels": 1,
+    "name": "ResidualUNet3DTo2D",
+    "num_classes": 1
+  },
+  "patch_size": [
+    16,
+    128,
+    128
+  ],
+  "ranking": {
+    "average_precision": 0.15982241928577423,
+    "positive_pixels": 375937,
+    "valid_pixels": 2424124
+  },
+  "requested_samples": 10000,
+  "selected": {
+    "f1": 0.2685204397770758,
+    "fn": 1,
+    "fp": 2048182,
+    "fp_per_mpix": 844916.3491636567,
+    "precision": 0.15508155956104447,
+    "recall": 0.9999973399798371,
+    "threshold": 0.15,
+    "tn": 5,
+    "tp": 375936,
+    "valid_pixels": 2424124
+  },
+  "source": {
+    "data_audit": {
+      "errors": [],
+      "label": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "ground_truth",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment3/inklabels.tif",
+        "sha256": "a0718f560f4af3233be79346f7ff65dd8f49fe775b3f9524603a9f6d36d815c9",
+        "shape": [
+          7606,
+          5249
+        ]
+      },
+      "valid_mask": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "valid_mask",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment3/mask.tif",
+        "sha256": "d940dc089a5bc9029371dbf4357597f3719fc03c043ac895b4dfa5f9e1010ef1",
+        "shape": [
+          7606,
+          5249
+        ]
+      },
+      "volume": {
+        "chunks": [
+          16,
+          128,
+          128
+        ],
+        "dtype": "uint16",
+        "metadata_sha256": "6b69c642bd2fbd0a942d622c9ba1d16b8b018d84ec1b0bda0b2d191f5ab8f615",
+        "path": "data/public/kaggle2023_fragment3/volume.zarr",
+        "shape": [
+          16,
+          7606,
+          5249
+        ]
+      },
+      "warnings": []
+    },
+    "data_identity_matches_training": false,
+    "ink": "data/public/kaggle2023_fragment3/inklabels.tif",
+    "mask": "data/public/kaggle2023_fragment3/mask.tif",
+    "split": "validation",
+    "split_manifest": "data/public/kaggle2023_fragment3/split.json",
+    "zarr": "data/public/kaggle2023_fragment3/volume.zarr"
+  },
+  "threshold_metrics": [
+    {
+      "f1": 0.2685204397770758,
+      "fn": 1,
+      "fp": 2048182,
+      "fp_per_mpix": 844916.3491636567,
+      "precision": 0.15508155956104447,
+      "recall": 0.9999973399798371,
+      "threshold": 0.15,
+      "tn": 5,
+      "tp": 375936,
+      "valid_pixels": 2424124
+    }
+  ],
+  "threshold_policy": "frozen"
+}

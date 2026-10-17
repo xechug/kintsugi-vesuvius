@@ -1,0 +1,12 @@
+*
+!cloud/
+!cloud/**
+!vesuvius_code/
+!vesuvius_code/**
+!configs/
+!configs/**
+!scripts/
+!scripts/**
+!README.md
+**/__pycache__/
+**/*.pyc

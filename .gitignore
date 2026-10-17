@@ -1,0 +1,63 @@
+# Byte-compiled / caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# macOS / OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Secrets & credentials (NEVER commit)
+.env
+.env.*
+*.pem
+*.key
+kaggle.json
+*credentials*.json
+*secret*
+
+# Heavy datasets & rasters (NEVER commit)
+data/
+sample_data/
+kaggle_dataset/
+kaggle_output/
+*.zarr/
+*.tif
+*.tiff
+*.npy
+*.npz
+
+# External reference repositories cloned locally
+villa/
+Vesuvius-Grandprize-Winner/
+
+# Checkpoints, binary weights & training logs
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.log
+lightning_logs/
+wandb/
+runs/**/*.ckpt
+runs/**/*.pt
+runs/**/*.pth
+runs/**/*.tif
+runs/**/*.tiff
+runs/**/*.png
+
+# Local scratch images in root
+overfit_prediction.png
+prediccion_kintsugi_marcada.png
+prediccion_kintsugi_parche.png
+prediction_sample.png

@@ -1,0 +1,61 @@
+{
+  "checkpoint": "runs/tiled_raster_smoke/smoke_model.ckpt",
+  "checkpoint_round_trip": true,
+  "checkpoint_schema_version": 2,
+  "data_audit_ok": true,
+  "evaluation_region": [
+    3232,
+    3136,
+    3488,
+    3392
+  ],
+  "evaluation_sample_index": 1,
+  "evaluation_sampling": "mixed_positive_diagnostic",
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiAxialUNet3DTo2D",
+    "num_classes": 1
+  },
+  "parameter_count": 6822,
+  "split_overlap": false,
+  "split_regions": {
+    "test": 2,
+    "train": 8,
+    "validation": 2
+  },
+  "train_loss": [
+    0.321788489818573,
+    1.044675350189209
+  ],
+  "train_steps": 2,
+  "validation": {
+    "average_precision": 0.12618917226791382,
+    "brier": 0.23133739829063416,
+    "ece": 0.34597787261009216,
+    "f1": 0.16918925261058312,
+    "f1_at_selected_threshold": 0.2206691733420522,
+    "fixed_threshold": 0.5,
+    "fn": 5959,
+    "fp": 15284,
+    "fp_per_mpix": 233215.33203125,
+    "fp_per_mpix_at_selected_threshold": 872543.3349609375,
+    "mean_probability": 0.46990975737571716,
+    "positive_rate": 0.123931884765625,
+    "precision": 0.12397546856193042,
+    "precision_at_selected_threshold": 0.12406176281363929,
+    "recall": 0.2663137158335385,
+    "recall_at_selected_threshold": 0.997168185176065,
+    "selected_threshold": 0.3,
+    "tn": 42130,
+    "tp": 2163,
+    "valid_pixels": 65536
+  }
+}

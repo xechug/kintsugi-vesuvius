@@ -1,0 +1,335 @@
+{
+  "calibration": {
+    "brier": 0.23304106295108795,
+    "ece": 0.21916136145591736,
+    "mean_probability": 0.4572339355945587,
+    "positive_rate": 0.23807549476623535,
+    "valid_pixels": 4194304
+  },
+  "checkpoint": "runs/ablation_kintsugi_128/smoke_model.ckpt",
+  "device": "mps",
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiAxialUNet3DTo2D",
+    "num_classes": 1
+  },
+  "patch_size": [
+    16,
+    128,
+    128
+  ],
+  "ranking": {
+    "average_precision": 0.23662248253822327,
+    "positive_pixels": 998561,
+    "valid_pixels": 4194304
+  },
+  "samples": 256,
+  "selected": {
+    "f1": 0.38459122324993533,
+    "fn": 37,
+    "fp": 3195566,
+    "fp_per_mpix": 761882.3051452637,
+    "precision": 0.23807882043542222,
+    "recall": 0.9999629466802729,
+    "threshold": 0.2,
+    "tn": 177,
+    "tp": 998524,
+    "valid_pixels": 4194304
+  },
+  "source": {
+    "data_audit": {
+      "errors": [],
+      "label": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "ground_truth",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/inklabels.png",
+        "sha256": "0b08dbf059c5d9feec7caf11e95390920589517b8816660ebec6474334a0693c",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "valid_mask": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "valid_mask",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/mask.png",
+        "sha256": "1fdc13f7dc149dc4e00272af597ba236b650e54bb2dca38865f211207cee069f",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "volume": {
+        "chunks": [
+          16,
+          128,
+          128
+        ],
+        "dtype": ">u2",
+        "metadata_sha256": "a38d8c08ef90e41a9cd1fa5cd19d6089affbfbc5edf846a66392b02d07b527e6",
+        "path": "data/public/kaggle2023_fragment1/volume.zarr",
+        "shape": [
+          16,
+          8181,
+          6330
+        ]
+      },
+      "warnings": []
+    },
+    "data_identity_matches_training": true,
+    "ink": "data/public/kaggle2023_fragment1/inklabels.png",
+    "mask": "data/public/kaggle2023_fragment1/mask.png",
+    "split": "validation",
+    "split_manifest": "data/public/kaggle2023_fragment1/split.json",
+    "zarr": "data/public/kaggle2023_fragment1/volume.zarr"
+  },
+  "threshold_metrics": [
+    {
+      "f1": 0.3845896984785275,
+      "fn": 0,
+      "fp": 3195742,
+      "fp_per_mpix": 761924.2668151855,
+      "precision": 0.23807555152787008,
+      "recall": 1.0,
+      "threshold": 0.05,
+      "tn": 1,
+      "tp": 998561,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845886763298123,
+      "fn": 4,
+      "fp": 3195739,
+      "fp_per_mpix": 761923.5515594482,
+      "precision": 0.23807499518393552,
+      "recall": 0.9999959942357052,
+      "threshold": 0.1,
+      "tn": 4,
+      "tp": 998557,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845880540260424,
+      "fn": 11,
+      "fp": 3195718,
+      "fp_per_mpix": 761918.5447692871,
+      "precision": 0.2380749155752565,
+      "recall": 0.9999889841481893,
+      "threshold": 0.15,
+      "tn": 25,
+      "tp": 998550,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.38459122324993533,
+      "fn": 37,
+      "fp": 3195566,
+      "fp_per_mpix": 761882.3051452637,
+      "precision": 0.23807882043542222,
+      "recall": 0.9999629466802729,
+      "threshold": 0.2,
+      "tn": 177,
+      "tp": 998524,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845658960777169,
+      "fn": 610,
+      "fp": 3193501,
+      "fp_per_mpix": 761389.970779419,
+      "precision": 0.2380919547688963,
+      "recall": 0.99938912094504,
+      "threshold": 0.25,
+      "tn": 2242,
+      "tp": 997951,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3838799926675449,
+      "fn": 8032,
+      "fp": 3171528,
+      "fp_per_mpix": 756151.1993408203,
+      "precision": 0.23799025337711618,
+      "recall": 0.9919564252960009,
+      "threshold": 0.3,
+      "tn": 24215,
+      "tp": 990529,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3806939957469792,
+      "fn": 43474,
+      "fp": 3063962,
+      "fp_per_mpix": 730505.4664611816,
+      "precision": 0.23764004867818234,
+      "recall": 0.9564633507617462,
+      "threshold": 0.35,
+      "tn": 131781,
+      "tp": 955087,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3712067640579705,
+      "fn": 151049,
+      "fp": 2720180,
+      "fp_per_mpix": 648541.4505004883,
+      "precision": 0.2375518962959807,
+      "recall": 0.8487333272579242,
+      "threshold": 0.4,
+      "tn": 475563,
+      "tp": 847512,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3377782342272274,
+      "fn": 413129,
+      "fp": 1882376,
+      "fp_per_mpix": 448793.4112548828,
+      "precision": 0.23722753147732725,
+      "recall": 0.5862756506613016,
+      "threshold": 0.45,
+      "tn": 1313367,
+      "tp": 585432,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.21686760040909012,
+      "fn": 798387,
+      "fp": 647313,
+      "fp_per_mpix": 154331.44569396973,
+      "precision": 0.2361971334073561,
+      "recall": 0.200462465487837,
+      "threshold": 0.5,
+      "tn": 2548430,
+      "tp": 200174,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.055721773081248524,
+      "fn": 967049,
+      "fp": 100975,
+      "fp_per_mpix": 24074.316024780273,
+      "precision": 0.2378497512963536,
+      "recall": 0.0315574111145939,
+      "threshold": 0.55,
+      "tn": 3094768,
+      "tp": 31512,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.020164162479742617,
+      "fn": 988016,
+      "fp": 36809,
+      "fp_per_mpix": 8775.949478149414,
+      "precision": 0.22268446171389958,
+      "recall": 0.010560196122219874,
+      "threshold": 0.6,
+      "tn": 3158934,
+      "tp": 10545,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.013651174822201797,
+      "fn": 991529,
+      "fp": 24648,
+      "fp_per_mpix": 5876.5411376953125,
+      "precision": 0.22196969696969698,
+      "recall": 0.007042133630293993,
+      "threshold": 0.65,
+      "tn": 3171095,
+      "tp": 7032,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.004578008150991176,
+      "fn": 996247,
+      "fp": 10045,
+      "fp_per_mpix": 2394.9146270751953,
+      "precision": 0.18723197669714378,
+      "recall": 0.0023173346445535124,
+      "threshold": 0.7,
+      "tn": 3185698,
+      "tp": 2314,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.00044609680300625236,
+      "fn": 998338,
+      "fp": 999,
+      "fp_per_mpix": 238.18016052246094,
+      "precision": 0.18248772504091654,
+      "recall": 0.00022332135943622873,
+      "threshold": 0.75,
+      "tn": 3194744,
+      "tp": 223,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 4.4059789133854636e-05,
+      "fn": 998539,
+      "fp": 60,
+      "fp_per_mpix": 14.30511474609375,
+      "precision": 0.2682926829268293,
+      "recall": 2.2031703621511356e-05,
+      "threshold": 0.8,
+      "tn": 3195683,
+      "tp": 22,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 1.0014310449632524e-05,
+      "fn": 998556,
+      "fp": 5,
+      "fp_per_mpix": 1.1920928955078125,
+      "precision": 0.5,
+      "recall": 5.007205368525308e-06,
+      "threshold": 0.85,
+      "tn": 3195738,
+      "tp": 5,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 2.0028761301228566e-06,
+      "fn": 998560,
+      "fp": 2,
+      "fp_per_mpix": 0.476837158203125,
+      "precision": 0.3333333333333333,
+      "recall": 1.0014410737050616e-06,
+      "threshold": 0.9,
+      "tn": 3195741,
+      "tp": 1,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.0,
+      "fn": 998561,
+      "fp": 0,
+      "fp_per_mpix": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "threshold": 0.95,
+      "tn": 3195743,
+      "tp": 0,
+      "valid_pixels": 4194304
+    }
+  ],
+  "threshold_policy": "selected_on_validation"
+}

@@ -1,0 +1,329 @@
+{
+  "calibration": {
+    "brier": 0.23748353123664856,
+    "ece": 0.2302178293466568,
+    "mean_probability": 0.46829110383987427,
+    "positive_rate": 0.23807549476623535,
+    "valid_pixels": 4194304
+  },
+  "checkpoint": "runs/ablation_residual_128/smoke_model.ckpt",
+  "device": "mps",
+  "model": {
+    "backend": "convolutional",
+    "base_channels": 4,
+    "in_channels": 1,
+    "name": "ResidualUNet3DTo2D",
+    "num_classes": 1
+  },
+  "patch_size": [
+    16,
+    128,
+    128
+  ],
+  "ranking": {
+    "average_precision": 0.23736606538295746,
+    "positive_pixels": 998561,
+    "valid_pixels": 4194304
+  },
+  "samples": 256,
+  "selected": {
+    "f1": 0.3845927491665178,
+    "fn": 29,
+    "fp": 3195579,
+    "fp_per_mpix": 761885.404586792,
+    "precision": 0.23807953580627694,
+    "recall": 0.9999709582088625,
+    "threshold": 0.2,
+    "tn": 164,
+    "tp": 998532,
+    "valid_pixels": 4194304
+  },
+  "source": {
+    "data_audit": {
+      "errors": [],
+      "label": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "ground_truth",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/inklabels.png",
+        "sha256": "0b08dbf059c5d9feec7caf11e95390920589517b8816660ebec6474334a0693c",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "valid_mask": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "valid_mask",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/mask.png",
+        "sha256": "1fdc13f7dc149dc4e00272af597ba236b650e54bb2dca38865f211207cee069f",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "volume": {
+        "chunks": [
+          16,
+          128,
+          128
+        ],
+        "dtype": ">u2",
+        "metadata_sha256": "a38d8c08ef90e41a9cd1fa5cd19d6089affbfbc5edf846a66392b02d07b527e6",
+        "path": "data/public/kaggle2023_fragment1/volume.zarr",
+        "shape": [
+          16,
+          8181,
+          6330
+        ]
+      },
+      "warnings": []
+    },
+    "data_identity_matches_training": true,
+    "ink": "data/public/kaggle2023_fragment1/inklabels.png",
+    "mask": "data/public/kaggle2023_fragment1/mask.png",
+    "split": "validation",
+    "split_manifest": "data/public/kaggle2023_fragment1/split.json",
+    "zarr": "data/public/kaggle2023_fragment1/volume.zarr"
+  },
+  "threshold_metrics": [
+    {
+      "f1": 0.38458962441734956,
+      "fn": 0,
+      "fp": 3195743,
+      "fp_per_mpix": 761924.5052337646,
+      "precision": 0.23807549476623535,
+      "recall": 1.0,
+      "threshold": 0.05,
+      "tn": 0,
+      "tp": 998561,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.38458821712436586,
+      "fn": 5,
+      "fp": 3195741,
+      "fp_per_mpix": 761924.0283966064,
+      "precision": 0.2380747000033617,
+      "recall": 0.9999949927946314,
+      "threshold": 0.1,
+      "tn": 2,
+      "tp": 998556,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845888391579627,
+      "fn": 8,
+      "fp": 3195720,
+      "fp_per_mpix": 761919.0216064453,
+      "precision": 0.23807534702676722,
+      "recall": 0.9999919884714104,
+      "threshold": 0.15,
+      "tn": 23,
+      "tp": 998553,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845927491665178,
+      "fn": 29,
+      "fp": 3195579,
+      "fp_per_mpix": 761885.404586792,
+      "precision": 0.23807953580627694,
+      "recall": 0.9999709582088625,
+      "threshold": 0.2,
+      "tn": 164,
+      "tp": 998532,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3845888183334075,
+      "fn": 234,
+      "fp": 3194771,
+      "fp_per_mpix": 761692.7623748779,
+      "precision": 0.23808816297639598,
+      "recall": 0.999765662788753,
+      "threshold": 0.25,
+      "tn": 972,
+      "tp": 998327,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.38455401856675603,
+      "fn": 2419,
+      "fp": 3186062,
+      "fp_per_mpix": 759616.3749694824,
+      "precision": 0.23818589432748857,
+      "recall": 0.9975775140427074,
+      "threshold": 0.3,
+      "tn": 9681,
+      "tp": 996142,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3823719241788153,
+      "fn": 25187,
+      "fp": 3119307,
+      "fp_per_mpix": 743700.7427215576,
+      "precision": 0.2378328533301276,
+      "recall": 0.9747767036765906,
+      "threshold": 0.35,
+      "tn": 76436,
+      "tp": 973374,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3753354748360844,
+      "fn": 103646,
+      "fp": 2875138,
+      "fp_per_mpix": 685486.3166809082,
+      "precision": 0.2373746469877214,
+      "recall": 0.8962046384747652,
+      "threshold": 0.4,
+      "tn": 320605,
+      "tp": 894915,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.3534048384114733,
+      "fn": 319034,
+      "fp": 2167513,
+      "fp_per_mpix": 516775.36964416504,
+      "precision": 0.2386784168820951,
+      "recall": 0.6805062484915794,
+      "threshold": 0.45,
+      "tn": 1028230,
+      "tp": 679527,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.24551253523216138,
+      "fn": 743691,
+      "fp": 822797,
+      "fp_per_mpix": 196170.09162902832,
+      "precision": 0.23650162805393501,
+      "recall": 0.25523728645520904,
+      "threshold": 0.5,
+      "tn": 2372946,
+      "tp": 254870,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.061350679814614284,
+      "fn": 963462,
+      "fp": 110549,
+      "fp_per_mpix": 26356.935501098633,
+      "precision": 0.24098511479731957,
+      "recall": 0.035149580245973956,
+      "threshold": 0.55,
+      "tn": 3085194,
+      "tp": 35099,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.020017820812873816,
+      "fn": 988092,
+      "fp": 36938,
+      "fp_per_mpix": 8806.705474853516,
+      "precision": 0.22083236652814986,
+      "recall": 0.01048408660061829,
+      "threshold": 0.6,
+      "tn": 3158805,
+      "tp": 10469,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.014066247991367733,
+      "fn": 991313,
+      "fp": 24743,
+      "fp_per_mpix": 5899.190902709961,
+      "precision": 0.22656372104654435,
+      "recall": 0.007258444902214286,
+      "threshold": 0.65,
+      "tn": 3171000,
+      "tp": 7248,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.007411044872865126,
+      "fn": 994788,
+      "fp": 15876,
+      "fp_per_mpix": 3785.1333618164062,
+      "precision": 0.19201995012468828,
+      "recall": 0.0037784371710891974,
+      "threshold": 0.7,
+      "tn": 3179867,
+      "tp": 3773,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.0012118223552276559,
+      "fn": 997954,
+      "fp": 2629,
+      "fp_per_mpix": 626.8024444580078,
+      "precision": 0.18757725587144622,
+      "recall": 0.0006078747317389724,
+      "threshold": 0.75,
+      "tn": 3193114,
+      "tp": 607,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.00013415736659101125,
+      "fn": 998494,
+      "fp": 199,
+      "fp_per_mpix": 47.44529724121094,
+      "precision": 0.2518796992481203,
+      "recall": 6.709655193823913e-05,
+      "threshold": 0.8,
+      "tn": 3195544,
+      "tp": 67,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 1.8025560244426596e-05,
+      "fn": 998552,
+      "fp": 12,
+      "fp_per_mpix": 2.86102294921875,
+      "precision": 0.42857142857142855,
+      "recall": 9.012969663345554e-06,
+      "threshold": 0.85,
+      "tn": 3195731,
+      "tp": 9,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 6.008622373105406e-06,
+      "fn": 998558,
+      "fp": 1,
+      "fp_per_mpix": 0.2384185791015625,
+      "precision": 0.75,
+      "recall": 3.0043232211151847e-06,
+      "threshold": 0.9,
+      "tn": 3195742,
+      "tp": 3,
+      "valid_pixels": 4194304
+    },
+    {
+      "f1": 0.0,
+      "fn": 998561,
+      "fp": 0,
+      "fp_per_mpix": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "threshold": 0.95,
+      "tn": 3195743,
+      "tp": 0,
+      "valid_pixels": 4194304
+    }
+  ],
+  "threshold_policy": "selected_on_validation"
+}

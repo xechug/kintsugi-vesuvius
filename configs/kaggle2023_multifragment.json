@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "name": "kaggle2023_fragment1",
+      "zarr": "../data/public/kaggle2023_fragment1/volume.zarr",
+      "mask": "../data/public/kaggle2023_fragment1/mask.tif",
+      "ink": "../data/public/kaggle2023_fragment1/inklabels.tif",
+      "split_manifest": "../data/public/kaggle2023_fragment1/split.json",
+      "splits": {
+        "train": "train"
+      }
+    },
+    {
+      "name": "kaggle2023_fragment2",
+      "zarr": "../data/public/kaggle2023_fragment2/volume.zarr",
+      "mask": "../data/public/kaggle2023_fragment2/mask.tif",
+      "ink": "../data/public/kaggle2023_fragment2/inklabels.tif",
+      "split_manifest": "../data/public/kaggle2023_fragment2/split.json",
+      "splits": {
+        "train": "train"
+      }
+    },
+    {
+      "name": "kaggle2023_fragment3",
+      "zarr": "../data/public/kaggle2023_fragment3/volume.zarr",
+      "mask": "../data/public/kaggle2023_fragment3/mask.tif",
+      "ink": "../data/public/kaggle2023_fragment3/inklabels.tif",
+      "split_manifest": "../data/public/kaggle2023_fragment3/split.json",
+      "splits": {
+        "validation": "validation",
+        "test": "test"
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "experiment_name": "kintsugi-axial-kaggle2023-fragment1-local",
+  "model": {
+    "name": "kintsugi_axial",
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ]
+  },
+  "data": {
+    "volume": "data/public/kaggle2023_fragment1/volume.zarr",
+    "valid_mask": "data/public/kaggle2023_fragment1/mask.tif",
+    "ground_truth": "data/public/kaggle2023_fragment1/inklabels.tif",
+    "audit": "data/public/kaggle2023_fragment1/data_audit.json",
+    "split": "data/public/kaggle2023_fragment1/split.json",
+    "source_layers": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "patch_size_zyx": [
+      16,
+      128,
+      128
+    ],
+    "coord_scale": 16
+  },
+  "training": {
+    "device": "mps",
+    "epochs": 3,
+    "epoch_size": 256,
+    "validation_size": 128,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "pos_weight": 3.0,
+    "seed": 1337
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "config": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "coord_scale": 16,
+    "device": "mps",
+    "labels": "data/public/kaggle2023_fragment1/inklabels.png",
+    "model_name": "residual_unet",
+    "output_dir": "runs/overfit_residual",
+    "patch_size": [
+      16,
+      128,
+      128
+    ],
+    "seed": 1337,
+    "split_manifest": "data/public/kaggle2023_fragment1/split.json",
+    "train_steps": 1,
+    "valid_mask": "data/public/kaggle2023_fragment1/mask.png",
+    "validation_samples": 8,
+    "volume": "data/public/kaggle2023_fragment1/volume.zarr"
+  },
+  "coords": [
+    0,
+    7056,
+    1088
+  ],
+  "final": {
+    "average_precision": 0.9999420642852783,
+    "positive_pixels": 14831,
+    "selected": {
+      "f1": 0.9983159312899966,
+      "fn": 11,
+      "fp": 39,
+      "fp_per_mpix": 2380.37109375,
+      "precision": 0.9973753280839895,
+      "recall": 0.9992583102960017,
+      "threshold": 0.8,
+      "tn": 1514,
+      "tp": 14820,
+      "valid_pixels": 16384
+    },
+    "valid_pixels": 16384
+  },
+  "final_loss": 0.013119814917445183,
+  "initial": {
+    "average_precision": 0.9213967323303223,
+    "positive_pixels": 14831,
+    "selected": {
+      "f1": 0.95024827807144,
+      "fn": 0,
+      "fp": 1553,
+      "fp_per_mpix": 94787.59765625,
+      "precision": 0.90521240234375,
+      "recall": 1.0,
+      "threshold": 0.15,
+      "tn": 0,
+      "tp": 14831,
+      "valid_pixels": 16384
+    },
+    "valid_pixels": 16384
+  },
+  "initial_loss": 1.2317299842834473,
+  "iterations": 300,
+  "learning_rate": 0.001,
+  "model": {
+    "backend": "convolutional",
+    "base_channels": 4,
+    "in_channels": 1,
+    "name": "ResidualUNet3DTo2D",
+    "num_classes": 1
+  },
+  "parameter_count": 5966,
+  "positive_rate": 0.90521240234375
+}

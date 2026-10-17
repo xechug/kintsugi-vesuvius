@@ -1,0 +1,52 @@
+{
+  "checkpoint": "runs/real_fragment1_smoke/smoke_model.ckpt",
+  "checkpoint_round_trip": true,
+  "checkpoint_schema_version": 2,
+  "data_audit_ok": true,
+  "evaluation_region": [
+    3392,
+    2528,
+    3648,
+    2784
+  ],
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiAxialUNet3DTo2D",
+    "num_classes": 1
+  },
+  "parameter_count": 6822,
+  "split_overlap": false,
+  "split_regions": {
+    "test": 2,
+    "train": 8,
+    "validation": 2
+  },
+  "train_loss": [
+    0.321788489818573,
+    1.044675350189209
+  ],
+  "train_steps": 2,
+  "validation": {
+    "brier": 0.22387099266052246,
+    "ece": 0.452489972114563,
+    "f1": 0.030766010883214737,
+    "fn": 787,
+    "fp": 17737,
+    "fp_per_mpix": 270645.1416015625,
+    "mean_probability": 0.46897807717323303,
+    "positive_rate": 0.0164947509765625,
+    "precision": 0.016305252065886528,
+    "recall": 0.2719703977798335,
+    "tn": 46718,
+    "tp": 294,
+    "valid_pixels": 65536
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "djanpy/vesuvius-mamba-simulator",
+  "title": "Vesuvius Mamba Simulator",
+  "code_file": "simulator.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [
+    "djanpy/vesuvius-mamba-code"
+  ],
+  "competition_sources": [
+    "vesuvius-challenge-ink-detection"
+  ],
+  "kernel_sources": []
+}

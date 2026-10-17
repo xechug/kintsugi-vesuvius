@@ -1,0 +1,89 @@
+{
+  "data": {
+    "align_to_chunks": true,
+    "augmentation": {
+      "intensity_jitter": 0.1,
+      "noise_std": 0.01,
+      "xy": true
+    },
+    "coord_scale": 16,
+    "epoch_size": 4,
+    "manifest": {
+      "schema_version": 1,
+      "sources": [
+        {
+          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/inklabels.tif",
+          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/mask.tif",
+          "name": "kaggle2023_fragment1",
+          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/split.json",
+          "splits": {
+            "train": "train"
+          },
+          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/volume.zarr"
+        },
+        {
+          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/inklabels.tif",
+          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/mask.tif",
+          "name": "kaggle2023_fragment2",
+          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/split.json",
+          "splits": {
+            "train": "train"
+          },
+          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/volume.zarr"
+        },
+        {
+          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/inklabels.tif",
+          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/mask.tif",
+          "name": "kaggle2023_fragment3",
+          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/split.json",
+          "splits": {
+            "test": "test",
+            "validation": "validation"
+          },
+          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/volume.zarr"
+        }
+      ]
+    },
+    "patch_size": [
+      16,
+      64,
+      64
+    ],
+    "positive_fraction": 0.33,
+    "validation_average_precision": "exact",
+    "validation_sampling": "non_overlapping_grid",
+    "validation_size": 4
+  },
+  "model": {
+    "backend": "convolutional",
+    "base_channels": 2,
+    "in_channels": 1,
+    "name": "ResidualUNet3DTo2D",
+    "num_classes": 1
+  },
+  "optimization": {
+    "epochs": 1,
+    "learning_rate": 0.0002,
+    "pos_weight": 3.0,
+    "seed": 1337,
+    "weight_decay": 0.0001
+  },
+  "training": {
+    "accumulate_grad_batches": 1,
+    "batch_size_per_device": 1,
+    "cpu_ram_budget_gib": 32.0,
+    "devices": 1,
+    "effective_global_batch_size": 1,
+    "estimated_prefetch_gib": 0.0,
+    "gpu_model": "Apple M1 Pro",
+    "patch_size": [
+      16,
+      64,
+      64
+    ],
+    "precision": "32-true",
+    "prefetch_factor": 2,
+    "validation_regions": 2,
+    "workers_per_device": 0
+  }
+}

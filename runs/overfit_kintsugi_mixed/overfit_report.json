@@ -1,0 +1,80 @@
+{
+  "config": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "coord_scale": 16,
+    "device": "mps",
+    "labels": "data/public/kaggle2023_fragment1/inklabels.png",
+    "model_name": "kintsugi_axial",
+    "output_dir": "runs/overfit_kintsugi_mixed",
+    "patch_size": [
+      16,
+      128,
+      128
+    ],
+    "seed": 1337,
+    "split_manifest": "data/public/kaggle2023_fragment1/split.json",
+    "train_steps": 1,
+    "valid_mask": "data/public/kaggle2023_fragment1/mask.png",
+    "validation_samples": 8,
+    "volume": "data/public/kaggle2023_fragment1/volume.zarr"
+  },
+  "coords": [
+    0,
+    640,
+    4944
+  ],
+  "final": {
+    "average_precision": 0.9999589323997498,
+    "positive_pixels": 1621,
+    "selected": {
+      "f1": 0.9984601170311057,
+      "fn": 0,
+      "fp": 5,
+      "fp_per_mpix": 305.17578125,
+      "precision": 0.9969249692496925,
+      "recall": 1.0,
+      "threshold": 0.65,
+      "tn": 14758,
+      "tp": 1621,
+      "valid_pixels": 16384
+    },
+    "valid_pixels": 16384
+  },
+  "final_loss": 0.01246507279574871,
+  "initial": {
+    "average_precision": 0.22017323970794678,
+    "positive_pixels": 1621,
+    "selected": {
+      "f1": 0.2686827566152951,
+      "fn": 697,
+      "fp": 4333,
+      "fp_per_mpix": 264465.33203125,
+      "precision": 0.17576564580559254,
+      "recall": 0.5700185070943862,
+      "threshold": 0.5,
+      "tn": 10430,
+      "tp": 924,
+      "valid_pixels": 16384
+    },
+    "valid_pixels": 16384
+  },
+  "initial_loss": 0.7651183009147644,
+  "iterations": 200,
+  "learning_rate": 0.001,
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiAxialUNet3DTo2D",
+    "num_classes": 1
+  },
+  "parameter_count": 6822,
+  "positive_rate": 0.09893798828125
+}

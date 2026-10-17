@@ -1,0 +1,339 @@
+{
+  "calibration": {
+    "brier": 0.31613004207611084,
+    "ece": 0.35412275791168213,
+    "mean_probability": 0.5556972026824951,
+    "positive_rate": 0.21083873510360718,
+    "valid_pixels": 2359296
+  },
+  "checkpoint": "runs/ablation_kintsugi_physical_128/smoke_model.ckpt",
+  "device": "mps",
+  "evaluated_samples": 144,
+  "evaluation_sampling": "non_overlapping_grid",
+  "model": {
+    "backend": "fallback",
+    "base_channels": 4,
+    "bidirectional": true,
+    "in_channels": 1,
+    "mixed_axes": [
+      "z",
+      "y",
+      "x"
+    ],
+    "name": "KintsugiPhysicalUNet3DTo2D",
+    "num_classes": 1,
+    "physical_stem": true,
+    "sheet_unwarp": true
+  },
+  "patch_size": [
+    16,
+    128,
+    128
+  ],
+  "ranking": {
+    "average_precision": 0.21956463158130646,
+    "positive_pixels": 497431,
+    "valid_pixels": 2359296
+  },
+  "requested_samples": 10000,
+  "selected": {
+    "f1": 0.34755434081578634,
+    "fn": 5696,
+    "fp": 1840521,
+    "fp_per_mpix": 780114.491780599,
+    "precision": 0.21084091969320692,
+    "recall": 0.9885491656129192,
+    "threshold": 0.05,
+    "tn": 21344,
+    "tp": 491735,
+    "valid_pixels": 2359296
+  },
+  "source": {
+    "data_audit": {
+      "errors": [],
+      "label": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "ground_truth",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/inklabels.tif",
+        "sha256": "26d3913cf48357864964231b27e408c04bc87d40e6e650445b8507909e959ed1",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "valid_mask": {
+        "dtype": "uint8",
+        "is_binary": true,
+        "kind": "valid_mask",
+        "observed_values": [
+          0.0,
+          1.0
+        ],
+        "path": "data/public/kaggle2023_fragment1/mask.tif",
+        "sha256": "51d04f4e0c9bd0e4c8aa17fa26166e8d82ea3728b912bdcdf632ce7682bab627",
+        "shape": [
+          8181,
+          6330
+        ]
+      },
+      "volume": {
+        "chunks": [
+          16,
+          128,
+          128
+        ],
+        "dtype": ">u2",
+        "metadata_sha256": "a38d8c08ef90e41a9cd1fa5cd19d6089affbfbc5edf846a66392b02d07b527e6",
+        "path": "data/public/kaggle2023_fragment1/volume.zarr",
+        "shape": [
+          16,
+          8181,
+          6330
+        ]
+      },
+      "warnings": []
+    },
+    "data_identity_matches_training": true,
+    "ink": "data/public/kaggle2023_fragment1/inklabels.tif",
+    "mask": "data/public/kaggle2023_fragment1/mask.tif",
+    "split": "validation",
+    "split_manifest": "data/public/kaggle2023_fragment1/split.json",
+    "zarr": "data/public/kaggle2023_fragment1/volume.zarr"
+  },
+  "threshold_metrics": [
+    {
+      "f1": 0.34755434081578634,
+      "fn": 5696,
+      "fp": 1840521,
+      "fp_per_mpix": 780114.491780599,
+      "precision": 0.21084091969320692,
+      "recall": 0.9885491656129192,
+      "threshold": 0.05,
+      "tn": 21344,
+      "tp": 491735,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.347090024701661,
+      "fn": 9992,
+      "fp": 1823848,
+      "fp_per_mpix": 773047.5531684028,
+      "precision": 0.21089505543880963,
+      "recall": 0.9799127919249102,
+      "threshold": 0.1,
+      "tn": 38017,
+      "tp": 487439,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.34651816357671,
+      "fn": 15878,
+      "fp": 1800397,
+      "fp_per_mpix": 763107.7236599392,
+      "precision": 0.21102697254541072,
+      "recall": 0.9680799950143839,
+      "threshold": 0.15,
+      "tn": 61468,
+      "tp": 481553,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.34575998958492565,
+      "fn": 24691,
+      "fp": 1764327,
+      "fp_per_mpix": 747819.2647298177,
+      "precision": 0.21132134173898234,
+      "recall": 0.9503629649137267,
+      "threshold": 0.2,
+      "tn": 97538,
+      "tp": 472740,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.34468525023788016,
+      "fn": 36653,
+      "fp": 1715407,
+      "fp_per_mpix": 727084.2658148871,
+      "precision": 0.21173659408552123,
+      "recall": 0.9263154085692287,
+      "threshold": 0.25,
+      "tn": 146458,
+      "tp": 460778,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.34345772086563126,
+      "fn": 51333,
+      "fp": 1654159,
+      "fp_per_mpix": 701123.9793565538,
+      "precision": 0.21240162513444782,
+      "recall": 0.8968037778103898,
+      "threshold": 0.3,
+      "tn": 207706,
+      "tp": 446098,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.34174184440568844,
+      "fn": 68593,
+      "fp": 1583450,
+      "fp_per_mpix": 671153.5983615451,
+      "precision": 0.21310965428407863,
+      "recall": 0.8621054980489756,
+      "threshold": 0.35,
+      "tn": 278415,
+      "tp": 428838,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.33935506791052394,
+      "fn": 88594,
+      "fp": 1503226,
+      "fp_per_mpix": 637150.2346462674,
+      "precision": 0.21381983752627398,
+      "recall": 0.821896906304593,
+      "threshold": 0.4,
+      "tn": 358639,
+      "tp": 408837,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.33611541557262614,
+      "fn": 111993,
+      "fp": 1410617,
+      "fp_per_mpix": 597897.4236382379,
+      "precision": 0.21460255949845633,
+      "recall": 0.7748572163777488,
+      "threshold": 0.45,
+      "tn": 451248,
+      "tp": 385438,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.3307526588390048,
+      "fn": 143396,
+      "fp": 1289318,
+      "fp_per_mpix": 546484.2054578994,
+      "precision": 0.21543454145274935,
+      "recall": 0.711726852568497,
+      "threshold": 0.5,
+      "tn": 572547,
+      "tp": 354035,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.32205954987625685,
+      "fn": 192596,
+      "fp": 1090769,
+      "fp_per_mpix": 462328.1690809462,
+      "precision": 0.21842514065594537,
+      "recall": 0.6128186622868297,
+      "threshold": 0.55,
+      "tn": 771096,
+      "tp": 304835,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.303283132607517,
+      "fn": 261373,
+      "fp": 823195,
+      "fp_per_mpix": 348915.523952908,
+      "precision": 0.22285327490221882,
+      "recall": 0.4745542597867845,
+      "threshold": 0.6,
+      "tn": 1038670,
+      "tp": 236058,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.2693163265969833,
+      "fn": 331809,
+      "fp": 566891,
+      "fp_per_mpix": 240279.72751193578,
+      "precision": 0.2261011067380374,
+      "recall": 0.33295472135833915,
+      "threshold": 0.65,
+      "tn": 1294974,
+      "tp": 165622,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.2214001771333237,
+      "fn": 389939,
+      "fp": 366097,
+      "fp_per_mpix": 155172.13609483506,
+      "precision": 0.22697317716416554,
+      "recall": 0.2160942924747352,
+      "threshold": 0.7,
+      "tn": 1495768,
+      "tp": 107492,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.1659437073219232,
+      "fn": 432339,
+      "fp": 221984,
+      "fp_per_mpix": 94089.08420138889,
+      "precision": 0.22674135072245677,
+      "recall": 0.13085633987427403,
+      "threshold": 0.75,
+      "tn": 1639881,
+      "tp": 65092,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.10967726293266739,
+      "fn": 461242,
+      "fp": 126298,
+      "fp_per_mpix": 53532.07058376736,
+      "precision": 0.22271935601001927,
+      "recall": 0.07275179874193606,
+      "threshold": 0.8,
+      "tn": 1735567,
+      "tp": 36189,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.06163128676318653,
+      "fn": 479535,
+      "fp": 65417,
+      "fp_per_mpix": 27727.33900282118,
+      "precision": 0.2148044122765955,
+      "recall": 0.03597684905042106,
+      "threshold": 0.85,
+      "tn": 1796448,
+      "tp": 17896,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.028468511646890106,
+      "fn": 489828,
+      "fp": 29100,
+      "fp_per_mpix": 12334.187825520834,
+      "precision": 0.20714927935046182,
+      "recall": 0.015284531925030808,
+      "threshold": 0.9,
+      "tn": 1832765,
+      "tp": 7603,
+      "valid_pixels": 2359296
+    },
+    {
+      "f1": 0.00921461775237138,
+      "fn": 495084,
+      "fp": 9630,
+      "fp_per_mpix": 4081.72607421875,
+      "precision": 0.19595892126575937,
+      "recall": 0.004718242329086848,
+      "threshold": 0.95,
+      "tn": 1852235,
+      "tp": 2347,
+      "valid_pixels": 2359296
+    }
+  ],
+  "threshold_policy": "selected_on_validation"
+}

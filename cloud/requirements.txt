@@ -1,0 +1,9 @@
+lightning==2.5.5
+numpy==2.5.0
+zarr==3.2.1
+numcodecs==0.16.5
+tifffile==2026.6.1
+pillow==12.3.0
+einops==0.8.1
+ninja==1.11.1.4
+tensorboard==2.20.0
