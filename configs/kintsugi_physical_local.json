@@ -53,6 +53,9 @@
     "batch_size": 1,
     "learning_rate": 0.0002,
     "pos_weight": 3.0,
+    "z_jitter": 2,
+    "synthetic_ink_prob": 0.25,
+    "fiber_weight": 0.15,
     "seed": 1337
   }
 }

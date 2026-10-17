@@ -14,7 +14,7 @@ from vesuvius_code.dataset import (
     PapyriDataset,
     make_dataloader,
 )
-from vesuvius_code.losses import FableLoss
+from vesuvius_code.losses import AnisotropicFiberSuppressionLoss, FableLoss
 from vesuvius_code.model_factory import create_model
 from vesuvius_code.splits import SpatialSplitManifest
 from vesuvius_code.training_config import TrainingConfig
@@ -79,6 +79,9 @@ def build_parser():
     )
     parser.add_argument("--intensity-jitter", type=float, default=0.10)
     parser.add_argument("--noise-std", type=float, default=0.01)
+    parser.add_argument("--z-jitter", type=int, default=0)
+    parser.add_argument("--synthetic-ink-prob", type=float, default=0.0)
+    parser.add_argument("--fiber-weight", type=float, default=0.0)
     parser.add_argument(
         "--align-to-chunks",
         action=argparse.BooleanOptionalAction,
@@ -116,6 +119,8 @@ def validate_data_args(args):
         raise ValueError("positive fraction must be between zero and one")
     if not 0.0 <= args.intensity_jitter <= 1.0 or not 0.0 <= args.noise_std <= 1.0:
         raise ValueError("augmentation magnitudes must be between zero and one")
+    if args.z_jitter < 0 or not 0.0 <= args.synthetic_ink_prob <= 1.0 or args.fiber_weight < 0.0:
+        raise ValueError("z_jitter >= 0, synthetic_ink_prob in [0, 1], and fiber_weight >= 0 required")
     if args.data_manifest:
         return
     missing = [name for name, value in single_values.items() if not value]
@@ -249,7 +254,14 @@ def main():
                 backend=args.backend,
                 bidirectional=True,
             )
-            self.loss_fn = FableLoss(pos_weight=args.pos_weight, tversky_beta=0.7)
+            base_loss = FableLoss(pos_weight=args.pos_weight, tversky_beta=0.7)
+            self.loss_fn = (
+                AnisotropicFiberSuppressionLoss(
+                    base_loss=base_loss, fiber_weight=args.fiber_weight
+                )
+                if args.fiber_weight > 0.0
+                else base_loss
+            )
             self.val_average_precision = BinaryAveragePrecision(thresholds=None)
             self.run_config = {
                 "model": self.model.get_config(),
@@ -259,6 +271,7 @@ def main():
                     "learning_rate": args.learning_rate,
                     "weight_decay": args.weight_decay,
                     "pos_weight": args.pos_weight,
+                    "fiber_weight": args.fiber_weight,
                     "seed": args.seed,
                 },
                 "data": {
@@ -273,6 +286,8 @@ def main():
                         "xy": args.augment_xy,
                         "intensity_jitter": args.intensity_jitter,
                         "noise_std": args.noise_std,
+                        "z_jitter": args.z_jitter,
+                        "synthetic_ink_prob": args.synthetic_ink_prob,
                     },
                     "align_to_chunks": args.align_to_chunks,
                     "manifest": data_manifest_payload,
@@ -285,7 +300,15 @@ def main():
 
         def training_step(self, batch, batch_idx):
             logits = self.model(batch["image"])
-            loss = self.loss_fn(logits, batch["target"], batch["valid_mask"])
+            if isinstance(self.loss_fn, AnisotropicFiberSuppressionLoss):
+                loss = self.loss_fn(
+                    logits,
+                    batch["target"],
+                    valid_mask=batch["valid_mask"],
+                    volume=batch["image"],
+                )
+            else:
+                loss = self.loss_fn(logits, batch["target"], batch["valid_mask"])
             self.log(
                 "train_loss",
                 loss,
@@ -299,7 +322,15 @@ def main():
 
         def validation_step(self, batch, batch_idx):
             logits = self.model(batch["image"])
-            loss = self.loss_fn(logits, batch["target"], batch["valid_mask"])
+            if isinstance(self.loss_fn, AnisotropicFiberSuppressionLoss):
+                loss = self.loss_fn(
+                    logits,
+                    batch["target"],
+                    valid_mask=batch["valid_mask"],
+                    volume=batch["image"],
+                )
+            else:
+                loss = self.loss_fn(logits, batch["target"], batch["valid_mask"])
             self.log(
                 "val_loss",
                 loss,
@@ -393,6 +424,8 @@ def main():
                     augment_xy=args.augment_xy if role == "train" else False,
                     intensity_jitter=args.intensity_jitter if role == "train" else 0.0,
                     noise_std=args.noise_std if role == "train" else 0.0,
+                    z_jitter=args.z_jitter if role == "train" else 0,
+                    synthetic_ink_prob=args.synthetic_ink_prob if role == "train" else 0.0,
                     align_to_chunks=args.align_to_chunks if role == "train" else False,
                     resample_each_epoch=role == "train",
                 )

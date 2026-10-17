@@ -13,7 +13,7 @@ from .checkpoints import load_checkpoint, read_checkpoint_metadata, save_checkpo
 from .data_contract import audit_training_data, open_raster
 from .dataset import PapyriDataset, open_volume_array
 from .inference import predict_region
-from .losses import FableLoss
+from .losses import AnisotropicFiberSuppressionLoss, FableLoss
 from .metrics import (
     average_precision,
     binary_segmentation_metrics,
@@ -40,6 +40,9 @@ class SmokeTestConfig:
     validation_samples: int = 2
     seed: int = 1337
     device: str = "cpu"
+    z_jitter: int = 0
+    synthetic_ink_prob: float = 0.0
+    fiber_weight: float = 0.0
 
 
 def _regions_overlap(first, second):
@@ -122,6 +125,8 @@ def run_smoke_test(config: SmokeTestConfig) -> dict:
         epoch_size=max(config.train_steps, 1),
         base_seed=config.seed,
         allowed_regions=train_regions,
+        z_jitter=config.z_jitter,
+        synthetic_ink_prob=config.synthetic_ink_prob,
         resample_each_epoch=True,
     )
     validation = PapyriDataset(
@@ -141,7 +146,12 @@ def run_smoke_test(config: SmokeTestConfig) -> dict:
         backend=config.backend,
         bidirectional=True,
     ).to(device)
-    loss_fn = FableLoss(pos_weight=3.0)
+    base_loss = FableLoss(pos_weight=3.0)
+    loss_fn = (
+        AnisotropicFiberSuppressionLoss(base_loss=base_loss, fiber_weight=config.fiber_weight)
+        if config.fiber_weight > 0.0
+        else base_loss
+    )
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, T_max=max(1, config.train_steps)
@@ -152,7 +162,15 @@ def run_smoke_test(config: SmokeTestConfig) -> dict:
         batch = _batch(training[step], device)
         optimizer.zero_grad(set_to_none=True)
         logits = model(batch["image"])
-        loss = loss_fn(logits, batch["target"], batch["valid_mask"])
+        if isinstance(loss_fn, AnisotropicFiberSuppressionLoss):
+            loss = loss_fn(
+                logits,
+                batch["target"],
+                valid_mask=batch["valid_mask"],
+                volume=batch["image"],
+            )
+        else:
+            loss = loss_fn(logits, batch["target"], batch["valid_mask"])
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("non-finite training loss")
         loss.backward()
@@ -319,6 +337,9 @@ def config_from_json(path, output_dir, steps):
         validation_samples=min(training["validation_size"], 8),
         seed=training["seed"],
         device=training["device"],
+        z_jitter=int(training.get("z_jitter", 0)),
+        synthetic_ink_prob=float(training.get("synthetic_ink_prob", 0.0)),
+        fiber_weight=float(training.get("fiber_weight", 0.0)),
     )
 
 
