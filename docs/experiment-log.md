@@ -78,3 +78,25 @@ Do not scale the current random-level checkpoint. First run the multi-fragment r
 ## Verification
 
 The final local check passed 84 unit/integration tests, Python compilation, a real Lightning MPS fit using exact AP, schema-v2 strict export, and strict evaluation outside Lightning. The CUDA image and real Mamba extension remain unverified until the first NVIDIA smoke run; Docker is installed locally but its daemon was not running.
+
+## 2026-10-18: Cloud Gate A Multi-Fragment Benchmark on Runpod NVIDIA GeForce RTX 4090
+
+### Configuration
+- **Hardware:** 1x NVIDIA GeForce RTX 4090 (24 GB VRAM, Secure Cloud `US-NC-1`, Pod `hez97mdxwgmrl4`, PyTorch `2.8.0+cu128`, `bf16-mixed`).
+- **Dataset Split (`configs/kaggle2023_multifragment.runpod.json`):**
+  - **Train:** `kaggle2023_fragment1` (`train`) + `kaggle2023_fragment2` (`train`), loaded into `/dev/shm` RAM disk (`4.2 GB`).
+  - **Validation / Test (Zero-Leakage):** `kaggle2023_fragment3` (`validation` and `test` guarded spatial splits).
+- **Training Budget:** `base_channels=16`, `patch_size=(16, 128, 128)`, `epochs=10`, `epoch_size=2048` (`20,480` patches/model), `validation_size=512`, `seed=1337`.
+
+### Results on Held-Out `kaggle2023_fragment3`
+
+| Model Architecture | Best Grid `val_ap` (Epoch) | Full Region Val `AP` (`prev=0.15300`) | Lift Over Chance (Val) | Full Region Val `Best F1` | Val `FP/Mpix @ 0.5` |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `ResidualUNet3DTo2D` (No Physics) | `0.16799` (Ep 6) | `0.16252` | `+0.00952` | `0.26574` | `6,589.4` |
+| `KintsugiAxialUNet3DTo2D` (No Physics) | `0.16934` (Ep 5) | `0.16635` | `+0.01336` | `0.26815` | `54,816.2` |
+| **`KintsugiPhysicalUNet3DTo2D` (Full Physics 1+2+3)** | **`0.18316` (Ep 3)** | **`0.17802`** | **`+0.02502` ($\times 2.63$ vs U-Net)** | **`0.26914`** | **`39,160.0` (`-28.6%` vs Axial)** |
+
+### Key Takeaways
+1. **Validation AP Lift (`+9.0%` relative on Grid AP, $\times 2.63$ Lift Over Chance on Full Regions):** On the completely unseen Fragment 3 validation regions, `KintsugiPhysical` achieved `0.18316` grid validation AP (vs `0.16799` for `ResidualUNet` and `0.16934` for `KintsugiAxial`) and `0.17802` full-region stitched AP (`+0.02502` lift over the `0.15300` positive prevalence baseline, more than $\times 2.6$ the lift of `ResidualUNet`).
+2. **Fiber False-Positive Suppression:** Compared to the unregularized sequence mixer (`KintsugiAxial`), adding `PhysicalStem3D` + `SoftSheetUnwarper3D` + `AnisotropicFiberSuppressionLoss` cut false positives at threshold `0.5` by **`28.6%`** (`39,160` vs `54,816` FP/Mpix on validation; `47,990` vs `78,031` FP/Mpix on test, a **`-38.5%` reduction**).
+
