@@ -503,7 +503,7 @@ def main():
         gradient_clip_val=1.0,
         callbacks=[checkpoint, LearningRateMonitor(logging_interval="step")],
         log_every_n_steps=25,
-        deterministic=True,
+        deterministic="warn",
         benchmark=False,
         use_distributed_sampler=True,
     )
