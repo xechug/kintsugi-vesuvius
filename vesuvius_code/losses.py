@@ -93,12 +93,12 @@ class BCEDiceLoss(FableLoss):
 
 class AnisotropicFiberSuppressionLoss(nn.Module):
     """
-    Opción 3 Física — Freno Anti-Fibras (Anisotropic Fiber-Texture Suppression).
+    Physical Option 3 — Anisotropic Fiber-Texture Suppression.
 
-    Calcula la coherencia direccional del papiro a partir del tensor de estructura 2D
-    J = G_rho * (∇S ∇S^T) sobre la proyección superficial del volumen, y penaliza
-    que la probabilidad predicha p = σ(logits) copie las estrías anisótropas de las
-    fibras vegetales en regiones de fondo (target == 0).
+    Computes directional coherence of papyrus fibers from the 2D structure tensor
+    J = G_rho * (∇S ∇S^T) on the surface projection of the volume, penalizing
+    predicted probability p = σ(logits) from mimicking anisotropic striations
+    of plant fibers in background regions (target == 0).
     """
 
     def __init__(

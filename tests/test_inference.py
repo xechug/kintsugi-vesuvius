@@ -103,6 +103,14 @@ class InferenceTests(unittest.TestCase):
             with self.assertRaisesRegex(Exception, "schema"):
                 api.load_kintsugi_model(path, device="cpu")
 
+    def test_predict_batch_with_tta_preserves_constant_output(self):
+        api = load_api(self)
+        model = ConstantProbabilityModel(0.42)
+        tensor = torch.randn(2, 1, 4, 16, 16)
+        out = api.predict_batch_with_tta(model, tensor, use_tta=True)
+        self.assertEqual(out.shape, (2, 1, 16, 16))
+        np.testing.assert_allclose(out.detach().numpy(), 0.42, atol=1e-6)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -67,10 +67,10 @@ def apply_fourth_augment_z(
     edge_crop_prob: float = 0.5,
 ) -> np.ndarray:
     """
-    Opción 2a Física — Alabeo/desplazamiento en Z y recorte de bordes Z (_fourth_augment,
-    inspirado en los ganadores del Grand Prize 2023).
-    Obliga a SoftSheetUnwarper3D y al cabezal de profundidad a seguir la epidermis
-    aunque la lámina de papiro cambie de cota Z.
+    Physical Option 2a — Z-warping/shift and edge-cropping (_fourth_augment,
+    inspired by the 2023 Grand Prize winners).
+    Forces SoftSheetUnwarper3D and the depth aggregation head to track the epidermis
+    even when the papyrus sheet shifts in vertical Z coordinate.
     """
     depth = vol_patch.shape[0]
     if depth <= 2 or max_shift <= 0:
@@ -105,11 +105,11 @@ def inject_synthetic_carbonized_ink(
     strength: float = 0.08,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Opción 2b Física — Simulador de Tinta Carbonizada Sintética sobre papiro desnudo.
-    Si el parche tiene poca tinta (<5%), sintetiza un trazo caligráfico con:
-    1. Costra laminar delgada (~1.5 capas) anclada a la epidermis local z_0(y, x).
-    2. Halo de contraste de fase sincrotrón (segunda derivada Gaussiana en Z).
-    3. Patrón de craquelado térmico Voronoi (islas poligonales de goma arábiga a 400 °C).
+    Physical Option 2b — Synthetic Carbonized Ink Simulator on bare papyrus.
+    If the patch contains low ink (<5%), synthesizes a calligraphic stroke with:
+    1. Thin laminar crust (~1.5 layers) anchored to the local epidermis z_0(y, x).
+    2. Synchrotron phase-contrast halo (Gaussian 2nd derivative in Z).
+    3. Thermal Voronoi crackle pattern (polygonal gum arabic islands at 400 °C).
     """
     depth, height, width = vol_patch.shape
     if float((ink_patch > 0.5).mean()) > 0.05 or depth < 4 or height < 16 or width < 16:
@@ -135,7 +135,7 @@ def inject_synthetic_carbonized_ink(
     if int(stroke_mask.sum()) < 16:
         return vol_patch, ink_patch
 
-    # Patrón de craquelado Voronoi (islas térmicas separadas por micro-fisuras)
+    # Thermal Voronoi crackle pattern (polygonal islands separated by micro-fissures)
     num_seeds = max(12, (height * width) // 128)
     seeds_y = rng.uniform(-1.0, 1.0, size=(num_seeds, 1, 1)).astype(np.float32)
     seeds_x = rng.uniform(-1.0, 1.0, size=(num_seeds, 1, 1)).astype(np.float32)
@@ -144,13 +144,13 @@ def inject_synthetic_carbonized_ink(
     fissure_gap = np.sqrt(np.maximum(part[1], 0.0)) - np.sqrt(np.maximum(part[0], 0.0))
     crackle_islands = np.clip(fissure_gap / 0.035, 0.15, 1.0).astype(np.float32)
 
-    # Detectar cota epidérmica z_0(y, x) donde el escalón vertical ∂z V es máximo
+    # Detect epidermal elevation z_0(y, x) where vertical step ∂z V is maximized
     dz = np.diff(vol_patch, axis=0, prepend=vol_patch[:1])
     z0_idx = np.argmax(dz, axis=0).astype(np.float32)
     z_grid = np.arange(depth, dtype=np.float32)[:, None, None]
     sigma_z = 1.15
     u_z = (z_grid - z0_idx[None, :, :]) / sigma_z
-    # Costra epidérmica + halo de fase sincrotrón
+    # Epidermal crust + synchrotron phase halo
     shell_profile = np.exp(-0.5 * (u_z**2)) * (1.0 + 0.35 * (1.0 - u_z**2))
 
     local_std = float(np.std(vol_patch) + 1e-4)

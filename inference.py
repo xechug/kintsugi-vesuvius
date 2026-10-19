@@ -42,6 +42,7 @@ def parse_args():
     parser.add_argument("--stride-x", type=int)
     parser.add_argument("--z-start", type=int)
     parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument("--tta", action="store_true", help="Apply 8-fold D4 dihedral Test-Time Augmentation")
     parser.add_argument("--device")
     return parser.parse_args()
 
@@ -74,7 +75,7 @@ def main():
     )
     print(f"device={device}")
     print(f"volume_shape={(depth, height, width)} dtype={volume.dtype}")
-    print(f"region={region} patch={patch_size} stride={stride}")
+    print(f"region={region} patch={patch_size} stride={stride} tta={args.tta}")
     probabilities = predict_region(
         model,
         volume,
@@ -84,6 +85,7 @@ def main():
         device=device,
         batch_size=args.batch_size,
         z_start=args.z_start,
+        tta=args.tta,
     )
     output = save_probability_tiff(
         args.output,

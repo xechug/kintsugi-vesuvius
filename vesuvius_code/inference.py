@@ -61,6 +61,37 @@ def load_kintsugi_model(path: str | Path, *, device="cpu"):
     return model, metadata
 
 
+def predict_batch_with_tta(
+    model, tensor: torch.Tensor, use_tta: bool = False
+) -> torch.Tensor:
+    """
+    Evaluates model probabilities on 5D tensor (B, 1, D, H, W).
+    If use_tta is True, averages predictions across the 8 dihedral transformations (D4 symmetry)
+    of the spatial plane (H, W).
+    """
+    if not use_tta:
+        return model.predict_proba(tensor)
+
+    probs = []
+    for flip in [False, True]:
+        for k in range(4):
+            x = tensor
+            if flip:
+                x = torch.flip(x, dims=[4])
+            if k > 0:
+                x = torch.rot90(x, k=k, dims=[3, 4])
+
+            p = model.predict_proba(x)
+
+            if k > 0:
+                p = torch.rot90(p, k=-k, dims=[2, 3])
+            if flip:
+                p = torch.flip(p, dims=[3])
+            probs.append(p)
+
+    return torch.stack(probs, dim=0).mean(dim=0)
+
+
 def predict_region(
     model,
     volume,
@@ -71,6 +102,7 @@ def predict_region(
     device="cpu",
     batch_size: int = 1,
     z_start: int | None = None,
+    tta: bool = False,
 ) -> np.ndarray:
     device = torch.device(device)
     depth, height, width = (int(value) for value in volume.shape)
@@ -119,7 +151,13 @@ def predict_region(
                 raise RuntimeError(f"Incomplete patch at {(z_start, y, x)}: {patch.shape}")
             patches.append(np.ascontiguousarray(patch.astype(np.float32) / divisor))
         tensor = torch.from_numpy(np.stack(patches)).unsqueeze(1).to(device)
-        probabilities = model.predict_proba(tensor).detach().float().cpu().numpy()[:, 0]
+        probabilities = (
+            predict_batch_with_tta(model, tensor, use_tta=tta)
+            .detach()
+            .float()
+            .cpu()
+            .numpy()[:, 0]
+        )
         for probability, (y, x) in zip(probabilities, batch_locations, strict=True):
             local_y = y - y0
             local_x = x - x0

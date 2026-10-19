@@ -1,28 +1,28 @@
-# Guía Rápida de Despliegue en GPU Cloud (`Gate A`)
+# GPU Cloud Deployment Guide (`Gate A`)
 
-## 1. ¿RunPod o Vast.ai? ¿Qué GPU elegir?
+## 1. Cloud Platform & GPU Selection
 
-### Recomendación de Plataforma
-- **1ª Opción (Más fiable y sin sorpresas): RunPod (`Secure Cloud` o `Community Cloud`)**
-  - **Por qué**: Discos NVMe rápidos, plantillas PyTorch oficiales limpias, SSH directo con 1 clic y almacenamiento persistente en `/workspace`.
-- **2ª Opción (Más barato por hora): Vast.ai**
-  - **Por qué**: Puedes encontrar GPUs un 30–40 % más baratas, pero son máquinas de particulares (a veces el disco o la red van lentos). Si usas Vast.ai, filtra siempre por **`Reliability > 99%`**, **`Disk Read > 1500 MB/s`** y **`Upload/Download > 500 Mbps`**.
+### Platform Recommendation
+- **1st Choice (Most reliable & seamless): RunPod (`Secure Cloud` or `Community Cloud`)**
+  - **Why**: High-speed NVMe storage, clean official PyTorch templates, 1-click direct SSH, and persistent `/workspace` volumes.
+- **2nd Choice (Lower hourly rate): Vast.ai**
+  - **Why**: Lower cost per hour, but relies on community-hosted rigs with varying network/disk performance. If using Vast.ai, always filter by **`Reliability > 99%`**, **`Disk Read > 1500 MB/s`**, and **`Upload/Download > 500 Mbps`**.
 
-### Recomendación de GPU (Calidad / Precio para Kintsugi)
-1. **Mejor Calidad/Precio (Recomendada): `1x NVIDIA L40S (48 GB VRAM)` o `1x RTX 6000 Ada (48 GB VRAM)`**
-   - **Precio**: ~\$0,79 – \$1,05 USD/hora en RunPod (~\$0,55 USD/hora en Vast.ai).
-   - **Ventaja**: Soporte nativo `bf16-mixed`, 48 GB de sobra para `base_channels=32`, y arquitectura Ada Lovelace rapidísima para `mamba-ssm`.
-2. **Opción Económica Rápida: `1x NVIDIA RTX 4090 (24 GB VRAM)`**
-   - **Precio**: ~\$0,39 – \$0,59 USD/hora.
-   - **Ventaja**: Es muy rápida por vatio/dólar y con parches `16x128x128` + `bf16-mixed` entra holgadamente en 24 GB.
-3. **Almacenamiento**: Pide **50 GB de Container Disk / Volume Disk** montado en `/workspace`.
+### GPU Recommendation (Best Value for Kintsugi)
+1. **Best Value / High VRAM (Recommended): `1x NVIDIA L40S (48 GB VRAM)` or `1x RTX 6000 Ada (48 GB VRAM)`**
+   - **Cost**: ~\$0.79 – \$1.05 USD/hour on RunPod.
+   - **Advantage**: Native `bf16-mixed` support, ample 48 GB VRAM for `base_channels=32`, and high-throughput Ada Lovelace architecture for `mamba-ssm`.
+2. **Fast Budget Option: `1x NVIDIA RTX 4090 (24 GB VRAM)`**
+   - **Cost**: ~\$0.39 – \$0.59 USD/hour.
+   - **Advantage**: Highest throughput per dollar; comfortably fits `16x128x128` patches in `bf16-mixed` within 24 GB.
+3. **Storage**: Allocate **50 GB Container Disk / Volume Disk** mounted at `/workspace`.
 
 ---
 
-## 2. Paso a Paso en la Máquina GPU (3 Comandos)
+## 2. Cloud Execution Walkthrough
 
-### Paso A — Clonar tu repo privado e instalar el entorno en el Pod
-Conéctate por SSH al Pod de RunPod/Vast.ai y ejecuta:
+### Step A — Clone Repository & Set Up Environment
+Connect via SSH to your cloud pod and run:
 
 ```bash
 cd /workspace
@@ -32,30 +32,29 @@ pip install --upgrade pip
 pip install -r cloud/requirements.txt
 ```
 
-### Paso B — Subir tus 3 Fragmentos Zarr ya procesados (¡Solo pesan 4,2 GB sin `layers/`!)
-En tu Mac tienes `data/public/kaggle2023_fragment{1,2,3}` que ocupa 15 GB en total, pero **10,4 GB son los `.tif` sueltos de `layers/` que ya no hacen falta porque ya están convertidos a `volume.zarr`**.
-Los 3 `volume.zarr` + `mask.tif` + `inklabels.tif` + `split.json` pesan **solo 4,2 GB en total**.
+### Step B — Synchronize Preprocessed Zarr Datasets (~4.2 GB without raw layer TIFFs)
+The raw dataset contains uncompressed per-slice TIFFs in `layers/` (over 10.4 GB), but the training pipeline streams directly from `volume.zarr`. Syncing only `volume.zarr`, `mask.tif`, `inklabels.tif`, and `split.json` requires only **4.2 GB total**:
 
-Ejecuta este comando **desde la terminal de tu Mac** (cambiando `<IP_DEL_POD>` y `<PUERTO_SSH>` por los que te da RunPod):
+From your local terminal:
 
 ```bash
 rsync -avzP --exclude='layers' --exclude='*.png' \
-  -e "ssh -p <PUERTO_SSH>" \
+  -e "ssh -p <SSH_PORT>" \
   /Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/ \
-  root@<IP_DEL_POD>:/workspace/data/public/
+  root@<POD_IP>:/workspace/data/public/
 ```
 
-### Paso C — Lanzar el Benchmark Controlado (`Gate A`) y Generar la Imagen de Letras Griegas
-De vuelta en la terminal SSH del servidor GPU, lanza el entrenamiento dentro de `tmux` para que no se corte si cierras el portátil:
+### Step C — Launch Benchmark (`Gate A`) and Render Comparative Letters
+In the cloud SSH session, launch training inside `tmux` so it runs uninterrupted:
 
 ```bash
 tmux new -s kintsugi
 cd /workspace/kintsugi-vesuvius
 
-# 1. Prueba rápida de 1 semilla (1337) con base_channels=32
-SEEDS="1337" BASE_CHANNELS=32 GPU_MODEL="NVIDIA L40S 48GB" ./scripts/run_cloud_gate_a.sh
+# 1. Benchmark run (seed 1337)
+SEEDS="1337" BASE_CHANNELS=32 GPU_MODEL="NVIDIA RTX 4090 24GB" ./scripts/run_cloud_gate_a.sh
 
-# 2. Al terminar, generar la lámina visual comparativa de letras griegas en Fragmento 3:
+# 2. Render diagnostic letter comparison on held-out Fragment 3:
 python scripts/render_fragment3_comparison.py \
   --residual-ckpt /workspace/checkpoints/gate_a/residual_unet_seed1337/best.strict.ckpt \
   --axial-ckpt /workspace/checkpoints/gate_a/kintsugi_axial_seed1337/best.strict.ckpt \

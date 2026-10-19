@@ -66,11 +66,11 @@ def _pad_replicate_3d(
 
 class PhysicalStem3D(nn.Module):
     """
-    Stem físico diferencial para tomografía de contraste de fase (XPCT):
-    1. Z-score local por parche (invarianza fotométrica entre fragmentos).
-    2. Derivada primera suave en Z (interfaz aire-papiro, estilo Holoborodko).
-    3. Derivada segunda suave en Z (Laplaciano de fase en la costra de tinta).
-    4. Residuo planar de alta frecuencia (patrón de craquelado / micro-fisuras).
+    Differential physical stem for X-ray phase-contrast tomography (XPCT):
+    1. Local per-patch Z-score (photometric invariance across distinct fragments).
+    2. Smooth first derivative along Z (air-papyrus boundary, Holoborodko-style).
+    3. Smooth second derivative along Z (phase Laplacian on ink crust).
+    4. Planar high-frequency residual (thermal crackle pattern / micro-fissures).
     """
 
     def __init__(self, in_channels: int = 1, eps: float = 1e-5, clamp_std: float = 4.0):
@@ -125,9 +125,9 @@ class PhysicalStem3D(nn.Module):
 
 class SoftSheetUnwarper3D(nn.Module):
     """
-    Alineación diferenciable de la lámina de papiro en Z (Soft Sheet Unwarping).
-    Estima un desplazamiento vertical suave Δz(y, x) y remuestrea las características
-    a lo largo de Z para corregir el alabeo antes del mezclador secuencial.
+    Differentiable papyrus sheet alignment along Z (Soft Sheet Unwarping).
+    Estimates a smooth vertical offset field Δz(y, x) and resamples features
+    along Z to correct local surface warping prior to sequence mixing.
     """
 
     def __init__(self, channels: int, max_shift: float = 2.0):
