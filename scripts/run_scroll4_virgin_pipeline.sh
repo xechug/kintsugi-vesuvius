@@ -128,7 +128,7 @@ echo "Copying model checkpoint (1.6 MB)..."
 ${SCP_CMD} runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/cloud_kintsugi_heavy_seed1337/
 
 echo ""
-echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 ==="
+echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (Expanded Column) ==="
 ${SSH_CMD} "bash -c '
     set -euo pipefail
     cd /workspace/kintsugi-vesuvius
@@ -136,21 +136,21 @@ ${SSH_CMD} "bash -c '
     export PYTHONPATH=.
     python3 scripts/scan_scroll4_virgin.py \
         --ckpt runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt \
-        --y-start 190 \
-        --x-start 200 \
-        --num-chunks 16 \
+        --y-start 185 \
+        --num-y-chunks 24 \
+        --x-start 190 \
+        --num-x-chunks 42 \
         --batch-size 32 \
-        --out-png runs/scroll4_virgin_kintsugi_prediction.png
+        --out-png runs/scroll4_virgin_expanded_prediction.png
 '"
 
 echo ""
 echo "=== 7. Retrieving Results to Local Machine & Artifacts ==="
 mkdir -p "${REPO_DIR}/runs"
-${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/scroll4_virgin_kintsugi_prediction.png "${REPO_DIR}/runs/"
-${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/scroll4_virgin_kintsugi_prediction.npy "${REPO_DIR}/runs/"
+${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/scroll4_virgin_expanded_prediction* "${REPO_DIR}/runs/"
 
 ARTIFACT_DIR="/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4"
-cp "${REPO_DIR}/runs/scroll4_virgin_kintsugi_prediction.png" "${ARTIFACT_DIR}/"
+cp "${REPO_DIR}/runs/scroll4_virgin_expanded_prediction"* "${ARTIFACT_DIR}/"
 
 echo "Results successfully transferred!"
-ls -lh "${REPO_DIR}/runs/scroll4_virgin_kintsugi_prediction.png"
+ls -lh "${REPO_DIR}/runs/scroll4_virgin_expanded_prediction"*

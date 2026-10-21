@@ -49,13 +49,23 @@ def download_chunk(cy: int, cx: int, out_dir: Path) -> tuple[int, int, np.ndarra
                     data = resp.read()
                 chunk_file.write_bytes(data)
                 break
+            except urllib.error.HTTPError as e:
+                if e.code == 404:
+                    # Sparse Zarr chunk: represents unsegmented region or empty background
+                    return cy, cx, np.zeros((109, 128, 128), dtype=np.uint8)
+                if attempt == 4:
+                    raise RuntimeError(f"Failed to download {url}: {e}")
+                time.sleep(1 + attempt)
             except Exception as e:
                 if attempt == 4:
                     raise RuntimeError(f"Failed to download {url}: {e}")
                 time.sleep(1 + attempt)
-    raw = chunk_file.read_bytes()
-    arr = np.frombuffer(raw, dtype=np.uint8).reshape((109, 128, 128))
-    return cy, cx, arr
+    if chunk_file.exists():
+        raw = chunk_file.read_bytes()
+        if len(raw) == 1785856:
+            arr = np.frombuffer(raw, dtype=np.uint8).reshape((109, 128, 128))
+            return cy, cx, arr
+    return cy, cx, np.zeros((109, 128, 128), dtype=np.uint8)
 
 
 def load_scroll4_volume(
@@ -94,6 +104,8 @@ def main():
     parser.add_argument("--y-start", type=int, default=190, help="Starting Y chunk index")
     parser.add_argument("--x-start", type=int, default=200, help="Starting X chunk index")
     parser.add_argument("--num-chunks", type=int, default=16, help="Number of chunks along Y and X (16 = 2048 px)")
+    parser.add_argument("--num-y-chunks", type=int, default=None, help="Number of chunks along Y (overrides num-chunks)")
+    parser.add_argument("--num-x-chunks", type=int, default=None, help="Number of chunks along X (overrides num-chunks)")
     parser.add_argument("--tta", action="store_true", default=True, help="Use 8-fold D4 dihedral TTA")
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--device", default=None)
@@ -106,9 +118,12 @@ def main():
     )
     print(f"Using device: {device}")
 
+    num_y = args.num_y_chunks if args.num_y_chunks is not None else args.num_chunks
+    num_x = args.num_x_chunks if args.num_x_chunks is not None else args.num_chunks
+
     scratch_dir = Path("/tmp/scroll4_s3_chunks")
-    y_chunks = range(args.y_start, args.y_start + args.num_chunks)
-    x_chunks = range(args.x_start, args.x_start + args.num_chunks)
+    y_chunks = range(args.y_start, args.y_start + num_y)
+    x_chunks = range(args.x_start, args.x_start + num_x)
 
     vol = load_scroll4_volume(y_chunks, x_chunks, scratch_dir)
 
@@ -145,26 +160,47 @@ def main():
     np.save(npy_path, prob)
     print(f"Saved raw probabilities to {npy_path}")
 
-    # Render figure (3 panels)
-    fig, axes = plt.subplots(1, 3, figsize=(24, 8), dpi=140, facecolor="#0D1117")
-    
-    # 1. Left: X-ray mean attenuation
+    # Process images for visualization
     mean_xray = slab.mean(axis=0)
     p5, p99 = np.percentile(mean_xray, [5, 99])
     norm_xray = np.clip((mean_xray - p5) / max(1e-5, p99 - p5), 0, 1)
+
+    p_lo, p_hi = np.percentile(prob, [40, 99.5])
+    norm_prob = np.clip((prob - p_lo) / max(1e-5, p_hi - p_lo), 0, 1)
+
+    ink_mask = np.clip((norm_prob - 0.5) / 0.5, 0, 1)
+    overlay = np.dstack([norm_xray * 0.7, norm_xray * 0.7, norm_xray * 0.7])
+    overlay[:, :, 0] = np.clip(overlay[:, :, 0] + ink_mask * 0.95, 0, 1)
+    overlay[:, :, 1] = np.clip(overlay[:, :, 1] + ink_mask * 0.75, 0, 1)
+    overlay[:, :, 2] = np.clip(overlay[:, :, 2] + ink_mask * 0.15, 0, 1)
+
+    # Save 1:1 pixel native overlay image
+    from PIL import Image
+    overlay_uint8 = (overlay * 255).astype(np.uint8)
+    native_overlay_path = out_path.with_name(out_path.stem + "_native_overlay.png")
+    Image.fromarray(overlay_uint8).save(native_overlay_path)
+    print(f"Saved 1:1 native resolution overlay to {native_overlay_path}")
+
+    # Render figure
+    is_wide = (w / max(1, h)) > 1.3
+    if is_wide:
+        fig_h = max(18, int(22 * (h / w) * 3 + 2))
+        fig, axes = plt.subplots(3, 1, figsize=(24, fig_h), dpi=140, facecolor="#0D1117")
+    else:
+        fig, axes = plt.subplots(1, 3, figsize=(24, 8), dpi=140, facecolor="#0D1117")
+    
+    # 1. X-ray
     axes[0].imshow(norm_xray, cmap="gray")
     axes[0].set_title(
-        f"1. Synchrotron X-Ray (Diamond Light Source, 78keV)\nSlab Z={z_start}..{z_end} | Y={args.y_start*128}..{(args.y_start+args.num_chunks)*128}, X={args.x_start*128}..{(args.x_start+args.num_chunks)*128}",
+        f"1. Synchrotron X-Ray (Diamond Light Source, 78keV)\nSlab Z={z_start}..{z_end} | Y={args.y_start*128}..{(args.y_start+num_y)*128}, X={args.x_start*128}..{(args.x_start+num_x)*128}",
         color="#94A3B8",
         fontsize=11,
         fontweight="bold",
     )
     axes[0].axis("off")
 
-    # 2. Middle: Kintsugi Physical AI Probability Heatmap
-    p_lo, p_hi = np.percentile(prob, [40, 99.5])
-    norm_prob = np.clip((prob - p_lo) / max(1e-5, p_hi - p_lo), 0, 1)
-    im1 = axes[1].imshow(norm_prob, cmap="inferno", vmin=0, vmax=1)
+    # 2. Probability Heatmap
+    axes[1].imshow(norm_prob, cmap="inferno", vmin=0, vmax=1)
     axes[1].set_title(
         f"2. Kintsugi Physical Heavy (410k params + 8-fold TTA)\nProbability Map ({h}x{w} px)",
         color="#22C55E",
@@ -173,16 +209,7 @@ def main():
     )
     axes[1].axis("off")
 
-    # 3. Right: High-Contrast Ink Stroke Composite Overlay
-    # Boost ink contrast above 75th percentile of normalized probability
-    ink_mask = np.clip((norm_prob - 0.5) / 0.5, 0, 1)
-    # RGB overlay: grayscale X-ray background + bright gold/cyan ink strokes
-    overlay = np.dstack([norm_xray * 0.7, norm_xray * 0.7, norm_xray * 0.7])
-    # Add gold/orange ink highlight (R: 1.0, G: 0.75, B: 0.1)
-    overlay[:, :, 0] = np.clip(overlay[:, :, 0] + ink_mask * 0.9, 0, 1)
-    overlay[:, :, 1] = np.clip(overlay[:, :, 1] + ink_mask * 0.7, 0, 1)
-    overlay[:, :, 2] = np.clip(overlay[:, :, 2] + ink_mask * 0.2, 0, 1)
-    
+    # 3. Ink Stroke Composite
     axes[2].imshow(overlay)
     axes[2].set_title(
         "3. High-Contrast Ink Stroke Overlay\nReconstructed Carbon Papyrus Letterforms",
@@ -193,13 +220,13 @@ def main():
     axes[2].axis("off")
 
     fig.suptitle(
-        "Vesuvius Challenge: VIRGIN Scroll 4 (PHerc1667, Buried 79 AD)\nSegment: 20260205070000-w041_2026020507_flatboi | First Letters Prize Exploration",
+        "Vesuvius Challenge: VIRGIN Scroll 4 (PHerc1667, Buried 79 AD)\nSegment: 20260205070000-w041_2026020507_flatboi | Expanded Scribal Column Exploration",
         fontsize=13,
         color="#F8FAFC",
         fontweight="bold",
-        y=0.98,
+        y=0.99,
     )
-    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     
     fig.savefig(out_path, dpi=140, facecolor="#0D1117")
     plt.close(fig)
