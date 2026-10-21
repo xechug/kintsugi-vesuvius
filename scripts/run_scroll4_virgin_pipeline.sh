@@ -127,8 +127,14 @@ ${SCP_CMD} scripts/scan_scroll4_virgin.py root@${SSH_HOST}:/workspace/kintsugi-v
 echo "Copying model checkpoint (1.6 MB)..."
 ${SCP_CMD} runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/cloud_kintsugi_heavy_seed1337/
 
+Y_START="${Y_START:-225}"
+NUM_Y_CHUNKS="${NUM_Y_CHUNKS:-20}"
+X_START="${X_START:-205}"
+NUM_X_CHUNKS="${NUM_X_CHUNKS:-24}"
+OUT_NAME="${OUT_NAME:-scroll4_prime_region_kintsugi}"
+
 echo ""
-echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (Expanded Column) ==="
+echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (Prime Region: Y=${Y_START}, X=${X_START}) ==="
 ${SSH_CMD} "bash -c '
     set -euo pipefail
     cd /workspace/kintsugi-vesuvius
@@ -136,21 +142,21 @@ ${SSH_CMD} "bash -c '
     export PYTHONPATH=.
     python3 scripts/scan_scroll4_virgin.py \
         --ckpt runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt \
-        --y-start 185 \
-        --num-y-chunks 24 \
-        --x-start 190 \
-        --num-x-chunks 42 \
+        --y-start ${Y_START} \
+        --num-y-chunks ${NUM_Y_CHUNKS} \
+        --x-start ${X_START} \
+        --num-x-chunks ${NUM_X_CHUNKS} \
         --batch-size 32 \
-        --out-png runs/scroll4_virgin_expanded_prediction.png
+        --out-png runs/${OUT_NAME}_prediction.png
 '"
 
 echo ""
 echo "=== 7. Retrieving Results to Local Machine & Artifacts ==="
 mkdir -p "${REPO_DIR}/runs"
-${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/scroll4_virgin_expanded_prediction* "${REPO_DIR}/runs/"
+${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/${OUT_NAME}_prediction* "${REPO_DIR}/runs/"
 
 ARTIFACT_DIR="/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4"
-cp "${REPO_DIR}/runs/scroll4_virgin_expanded_prediction"* "${ARTIFACT_DIR}/"
+cp "${REPO_DIR}/runs/${OUT_NAME}_prediction"* "${ARTIFACT_DIR}/"
 
 echo "Results successfully transferred!"
-ls -lh "${REPO_DIR}/runs/scroll4_virgin_expanded_prediction"*
+ls -lh "${REPO_DIR}/runs/${OUT_NAME}_prediction"*
