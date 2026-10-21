@@ -36,9 +36,10 @@ CANDIDATE_GPUS=(
     "NVIDIA GeForce RTX 4090"
 )
 
+CREATE_OUTPUT=""
 for GPU in "${CANDIDATE_GPUS[@]}"; do
     echo "Attempting to create pod with GPU: ${GPU}..."
-    if runpodctl pod create \
+    if CREATE_OUTPUT=$(runpodctl pod create \
         --name "kintsugi-scroll4-scan" \
         --template-id "runpod-torch-v280" \
         --gpu-id "${GPU}" \
@@ -49,7 +50,7 @@ for GPU in "${CANDIDATE_GPUS[@]}"; do
         --ports "22/tcp" \
         --ssh \
         --wait \
-        --wait-timeout "5m"; then
+        --wait-timeout "5m" 2>&1); then
         echo "Successfully provisioned with ${GPU}!"
         break
     else
@@ -57,8 +58,12 @@ for GPU in "${CANDIDATE_GPUS[@]}"; do
     fi
 done
 
-# Find POD_ID from pod list
-POD_ID=$(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll4-scan") | .id' | head -n 1)
+# Extract POD_ID, SSH_HOST, and SSH_PORT directly
+POD_ID=$(echo "${CREATE_OUTPUT}" | jq -r '.id // empty' 2>/dev/null || true)
+if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
+    POD_ID=$(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll4-scan") | .id' | head -n 1)
+fi
+
 if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
     echo "ERROR: Could not find pod named 'kintsugi-scroll4-scan' in pod list."
     exit 1
@@ -67,23 +72,29 @@ echo "Found Pod ID: ${POD_ID}"
 
 # Retrieve SSH details
 echo "=== 3. Extracting SSH Connection Details ==="
-SSH_HOST=""
-SSH_PORT=""
+SSH_HOST=$(echo "${CREATE_OUTPUT}" | jq -r '.ssh.ip // empty' 2>/dev/null || true)
+SSH_PORT=$(echo "${CREATE_OUTPUT}" | jq -r '.ssh.port // empty' 2>/dev/null || true)
 
-for i in {1..12}; do
-    POD_DETAILS=$(runpodctl pod get "${POD_ID}" -o json 2>/dev/null || true)
-    PORT_ENTRY=$(echo "${POD_DETAILS}" | jq -r '.runtime.ports[]? | select(.privatePort == 22) // empty' 2>/dev/null || true)
-    if [ -n "${PORT_ENTRY}" ]; then
-        SSH_HOST=$(echo "${PORT_ENTRY}" | jq -r '.ip')
-        SSH_PORT=$(echo "${PORT_ENTRY}" | jq -r '.publicPort')
+if [ -z "${SSH_HOST}" ] || [ "${SSH_HOST}" = "null" ] || [ -z "${SSH_PORT}" ] || [ "${SSH_PORT}" = "null" ]; then
+    for i in {1..12}; do
+        POD_DETAILS=$(runpodctl pod get "${POD_ID}" -o json 2>/dev/null || true)
+        SSH_HOST=$(echo "${POD_DETAILS}" | jq -r '.ssh.ip // empty' 2>/dev/null || true)
+        SSH_PORT=$(echo "${POD_DETAILS}" | jq -r '.ssh.port // empty' 2>/dev/null || true)
         if [ -n "${SSH_HOST}" ] && [ "${SSH_HOST}" != "null" ] && [ -n "${SSH_PORT}" ] && [ "${SSH_PORT}" != "null" ]; then
-            echo "SSH Host: ${SSH_HOST}, SSH Port: ${SSH_PORT}"
             break
         fi
-    fi
-    echo "Waiting for SSH ports to be exposed (attempt $i/12)..."
-    sleep 5
-done
+        echo "Waiting for SSH info in pod get (attempt $i/12)..."
+        sleep 3
+    done
+fi
+
+if [ -z "${SSH_HOST}" ] || [ "${SSH_HOST}" = "null" ] || [ -z "${SSH_PORT}" ] || [ "${SSH_PORT}" = "null" ]; then
+    SSH_INFO=$(runpodctl ssh info "${POD_ID}" -o json 2>/dev/null || true)
+    SSH_HOST=$(echo "${SSH_INFO}" | jq -r '.ip // empty' 2>/dev/null || true)
+    SSH_PORT=$(echo "${SSH_INFO}" | jq -r '.port // empty' 2>/dev/null || true)
+fi
+
+echo "SSH Host: ${SSH_HOST}, SSH Port: ${SSH_PORT}"
 
 if [ -z "${SSH_HOST}" ] || [ -z "${SSH_PORT}" ]; then
     echo "ERROR: Could not retrieve SSH host and port."
