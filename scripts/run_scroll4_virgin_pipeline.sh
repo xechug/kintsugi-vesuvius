@@ -132,7 +132,7 @@ echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 ==="
 ${SSH_CMD} "bash -c '
     set -euo pipefail
     cd /workspace/kintsugi-vesuvius
-    pip install -q matplotlib
+    pip install -q --break-system-packages matplotlib tifffile pillow
     export PYTHONPATH=.
     python3 scripts/scan_scroll4_virgin.py \
         --ckpt runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt \
