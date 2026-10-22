@@ -28,17 +28,20 @@ from vesuvius_code.checkpoints import load_checkpoint, read_checkpoint_metadata
 from vesuvius_code.inference import predict_region
 from vesuvius_code.model_factory import build_model_from_config
 
-HTTP_BASE = (
-    "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc1667/segments/"
-    "20260205070000-w041_2026020507_flatboi/"
-    "surface-volumes/2.399um-0.22m-78keV-volume-20251217075048.zarr/0/0"
-)
+DEFAULT_SEGMENT = "20240304161941-w023_20240304161941_flatboi"
 
 
-def download_chunk(cy: int, cx: int, out_dir: Path) -> tuple[int, int, np.ndarray]:
+def get_http_base(segment: str) -> str:
+    return (
+        f"https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc1667/segments/"
+        f"{segment}/surface-volumes/2.399um-0.22m-78keV-volume-20251217075048.zarr/0/0"
+    )
+
+
+def download_chunk(cy: int, cx: int, out_dir: Path, http_base: str) -> tuple[int, int, np.ndarray]:
     chunk_file = out_dir / f"chunk_{cy}_{cx}.bin"
     if not chunk_file.exists():
-        url = f"{HTTP_BASE}/{cy}/{cx}"
+        url = f"{http_base}/{cy}/{cx}"
         for attempt in range(5):
             try:
                 req = urllib.request.Request(
@@ -72,19 +75,20 @@ def load_scroll4_volume(
     y_chunks: range,
     x_chunks: range,
     scratch_dir: Path,
+    http_base: str,
     max_workers: int = 16,
 ) -> np.ndarray:
     scratch_dir.mkdir(parents=True, exist_ok=True)
     num_y = len(y_chunks)
     num_x = len(x_chunks)
-    print(f"Streaming {num_y * num_x} chunks ({num_y * num_x * 1.78:.1f} MB) from Scroll 4 S3...")
+    print(f"Streaming {num_y * num_x} chunks ({num_y * num_x * 1.78:.1f} MB) from Scroll 4 S3 ({http_base})...")
 
     full_vol = np.zeros((109, num_y * 128, num_x * 128), dtype=np.uint8)
 
     tasks = [(cy, cx) for cy in y_chunks for cx in x_chunks]
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [
-            executor.submit(download_chunk, cy, cx, scratch_dir)
+            executor.submit(download_chunk, cy, cx, scratch_dir, http_base)
             for cy, cx in tasks
         ]
         for f in futures:
@@ -99,13 +103,14 @@ def load_scroll4_volume(
 
 def main():
     parser = argparse.ArgumentParser(description="Scan virgin Scroll 4 segment with Kintsugi Physical")
+    parser.add_argument("--segment", default=DEFAULT_SEGMENT, help="Scroll 4 segment name")
     parser.add_argument("--ckpt", default="runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt")
-    parser.add_argument("--out-png", default="runs/scroll4_virgin_kintsugi_prediction.png")
-    parser.add_argument("--y-start", type=int, default=190, help="Starting Y chunk index")
-    parser.add_argument("--x-start", type=int, default=200, help="Starting X chunk index")
+    parser.add_argument("--out-png", default="runs/scroll4_w023_hotspot1_kintsugi_prediction.png")
+    parser.add_argument("--y-start", type=int, default=65, help="Starting Y chunk index")
+    parser.add_argument("--x-start", type=int, default=345, help="Starting X chunk index")
     parser.add_argument("--num-chunks", type=int, default=16, help="Number of chunks along Y and X (16 = 2048 px)")
-    parser.add_argument("--num-y-chunks", type=int, default=None, help="Number of chunks along Y (overrides num-chunks)")
-    parser.add_argument("--num-x-chunks", type=int, default=None, help="Number of chunks along X (overrides num-chunks)")
+    parser.add_argument("--num-y-chunks", type=int, default=20, help="Number of chunks along Y (overrides num-chunks)")
+    parser.add_argument("--num-x-chunks", type=int, default=25, help="Number of chunks along X (overrides num-chunks)")
     parser.add_argument("--tta", action="store_true", default=True, help="Use 8-fold D4 dihedral TTA")
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--device", default=None)
@@ -125,7 +130,8 @@ def main():
     y_chunks = range(args.y_start, args.y_start + num_y)
     x_chunks = range(args.x_start, args.x_start + num_x)
 
-    vol = load_scroll4_volume(y_chunks, x_chunks, scratch_dir)
+    http_base = get_http_base(args.segment)
+    vol = load_scroll4_volume(y_chunks, x_chunks, scratch_dir, http_base)
 
     # Load model
     ckpt_path = Path(args.ckpt)
@@ -220,7 +226,7 @@ def main():
     axes[2].axis("off")
 
     fig.suptitle(
-        "Vesuvius Challenge: VIRGIN Scroll 4 (PHerc1667, Buried 79 AD)\nSegment: 20260205070000-w041_2026020507_flatboi | Expanded Scribal Column Exploration",
+        f"Vesuvius Challenge: VIRGIN Scroll 4 (PHerc1667, Buried 79 AD)\nSegment: {args.segment} | Prime Hotspot Text Exploration",
         fontsize=13,
         color="#F8FAFC",
         fontweight="bold",

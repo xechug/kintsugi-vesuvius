@@ -127,20 +127,22 @@ ${SCP_CMD} scripts/scan_scroll4_virgin.py root@${SSH_HOST}:/workspace/kintsugi-v
 echo "Copying model checkpoint (1.6 MB)..."
 ${SCP_CMD} runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/cloud_kintsugi_heavy_seed1337/
 
-Y_START="${Y_START:-225}"
+SEGMENT="${SEGMENT:-20240304161941-w023_20240304161941_flatboi}"
+Y_START="${Y_START:-65}"
 NUM_Y_CHUNKS="${NUM_Y_CHUNKS:-20}"
-X_START="${X_START:-205}"
-NUM_X_CHUNKS="${NUM_X_CHUNKS:-24}"
-OUT_NAME="${OUT_NAME:-scroll4_prime_region_kintsugi}"
+X_START="${X_START:-345}"
+NUM_X_CHUNKS="${NUM_X_CHUNKS:-25}"
+OUT_NAME="${OUT_NAME:-scroll4_w023_hotspot1_kintsugi}"
 
 echo ""
-echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (Prime Region: Y=${Y_START}, X=${X_START}) ==="
+echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (${SEGMENT}: Y=${Y_START}, X=${X_START}) ==="
 ${SSH_CMD} "bash -c '
     set -euo pipefail
     cd /workspace/kintsugi-vesuvius
     pip install -q --break-system-packages matplotlib tifffile pillow
     export PYTHONPATH=.
     python3 scripts/scan_scroll4_virgin.py \
+        --segment ${SEGMENT} \
         --ckpt runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt \
         --y-start ${Y_START} \
         --num-y-chunks ${NUM_Y_CHUNKS} \
