@@ -12,35 +12,35 @@
       "schema_version": 1,
       "sources": [
         {
-          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/inklabels.tif",
-          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/mask.tif",
+          "ink": "data/public/kaggle2023_fragment1/inklabels.tif",
+          "mask": "data/public/kaggle2023_fragment1/mask.tif",
           "name": "kaggle2023_fragment1",
-          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/split.json",
+          "split_manifest": "data/public/kaggle2023_fragment1/split.json",
           "splits": {
             "train": "train"
           },
-          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment1/volume.zarr"
+          "zarr": "data/public/kaggle2023_fragment1/volume.zarr"
         },
         {
-          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/inklabels.tif",
-          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/mask.tif",
+          "ink": "data/public/kaggle2023_fragment2/inklabels.tif",
+          "mask": "data/public/kaggle2023_fragment2/mask.tif",
           "name": "kaggle2023_fragment2",
-          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/split.json",
+          "split_manifest": "data/public/kaggle2023_fragment2/split.json",
           "splits": {
             "train": "train"
           },
-          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment2/volume.zarr"
+          "zarr": "data/public/kaggle2023_fragment2/volume.zarr"
         },
         {
-          "ink": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/inklabels.tif",
-          "mask": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/mask.tif",
+          "ink": "data/public/kaggle2023_fragment3/inklabels.tif",
+          "mask": "data/public/kaggle2023_fragment3/mask.tif",
           "name": "kaggle2023_fragment3",
-          "split_manifest": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/split.json",
+          "split_manifest": "data/public/kaggle2023_fragment3/split.json",
           "splits": {
             "test": "test",
             "validation": "validation"
           },
-          "zarr": "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/kaggle2023_fragment3/volume.zarr"
+          "zarr": "data/public/kaggle2023_fragment3/volume.zarr"
         }
       ]
     },

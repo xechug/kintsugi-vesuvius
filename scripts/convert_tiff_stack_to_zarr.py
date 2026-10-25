@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import os
 import shutil
 import sys
+import os
 from pathlib import Path
 
 import numpy as np

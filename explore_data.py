@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def main():
-    base_dir = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/sample_data"
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample_data")
     
     # 1. Load the mask
     mask_path = os.path.join(base_dir, "mask.tif")

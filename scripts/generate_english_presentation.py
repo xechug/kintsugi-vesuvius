@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import shutil
 import zipfile
+import os
 from pathlib import Path
 
 import matplotlib
@@ -25,8 +26,8 @@ from matplotlib.patches import FancyBboxPatch
 import numpy as np
 from PIL import Image
 
-ARTIFACT_DIR = Path("/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4")
-PROJECT_DIR = Path("/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge")
+ARTIFACT_DIR = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 RUN_DIR = PROJECT_DIR / "runs/p800_and_scroll_adaptation"
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 

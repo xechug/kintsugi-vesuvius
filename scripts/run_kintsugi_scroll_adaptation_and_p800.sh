@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${REPO_DIR}"
 
 SSH_KEY="$HOME/.runpod/ssh/runpodctl-ssh-key"

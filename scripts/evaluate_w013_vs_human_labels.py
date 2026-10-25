@@ -7,6 +7,7 @@ Both predictions are compared on the label pyramid level 3 grid (19.2 um/px), re
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import matplotlib
@@ -16,7 +17,7 @@ import numpy as np
 from PIL import Image
 
 REPO = Path(__file__).resolve().parents[1]
-ART = Path("/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4")
+ART = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
 LAB = REPO / "data/w013_labels"
 
 CY, CX, NY, NX = 86, 62, 20, 25          # chunk window that was scanned (128 px chunks)

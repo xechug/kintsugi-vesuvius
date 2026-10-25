@@ -40,7 +40,7 @@ From your local terminal:
 ```bash
 rsync -avzP --exclude='layers' --exclude='*.png' \
   -e "ssh -p <SSH_PORT>" \
-  /Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/data/public/ \
+  ./data/public/ \
   root@<POD_IP>:/workspace/data/public/
 ```
 

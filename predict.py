@@ -14,7 +14,7 @@ def generate_prediction_image():
     # 1. Load model architecture
     model = DualStreamVMambaForense(in_channels=1, use_real_mamba=False).to(device)
     
-    model_path = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/modelo_kintsugi.pth"
+    model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "modelo_kintsugi.pth")
     if os.path.exists(model_path):
         checkpoint = torch.load(model_path, map_location=device, weights_only=True)
         state_dict = checkpoint.get("model", checkpoint) if isinstance(checkpoint, dict) else checkpoint
@@ -26,9 +26,9 @@ def generate_prediction_image():
     model.eval()
     
     # 2. Load dataset
-    zarr_dir = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/sample_data/volume.zarr"
-    mask_file = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/sample_data/mask.tif"
-    ink_file = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/sample_data/inklabels.tif"
+    zarr_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample_data/volume.zarr")
+    mask_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample_data/mask.tif")
+    ink_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample_data/inklabels.tif")
     
     dataset = PapyriDataset(zarr_dir, mask_file, ink_file, patch_size=(32, 64, 64), stride=(32, 32, 32), downsample_factor=2)
     
@@ -59,7 +59,7 @@ def generate_prediction_image():
     pred_image = (pred_image - pred_image.min()) / (pred_image.max() - pred_image.min() + 1e-8)
     
     # 5. Save comparison plot
-    output_path = "/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge/prediction_sample.png"
+    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prediction_sample.png")
     
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
     axes[0].imshow(pred_image, cmap='magma')

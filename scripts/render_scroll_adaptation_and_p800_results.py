@@ -8,6 +8,7 @@ Renders the complete visual and quantitative validation of Multi-Scale KintsugiP
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import matplotlib.patches as mpatches
@@ -33,9 +34,9 @@ def roc_curve_np(y_true: np.ndarray, y_score: np.ndarray, num_pts: int = 200):
 
 
 def main():
-    repo_dir = Path("/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge")
+    repo_dir = Path(__file__).resolve().parent.parent
     out_run = repo_dir / "runs/p800_and_scroll_adaptation"
-    artifact_dir = Path("/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4")
+    artifact_dir = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
 
     with open(out_run / "metrics_report.json", "r", encoding="utf-8") as f:
         metrics = json.load(f)

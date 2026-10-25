@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${REPO_DIR}"
 
 SSH_KEY="$HOME/.runpod/ssh/runpodctl-ssh-key"
@@ -157,7 +157,7 @@ echo "=== 7. Retrieving Results to Local Machine & Artifacts ==="
 mkdir -p "${REPO_DIR}/runs"
 ${SCP_CMD} root@${SSH_HOST}:/workspace/kintsugi-vesuvius/runs/${OUT_NAME}_prediction* "${REPO_DIR}/runs/"
 
-ARTIFACT_DIR="/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4"
+ARTIFACT_DIR="${VESUVIUS_ARTIFACT_DIR:-${REPO_DIR}/docs/figures}"
 cp "${REPO_DIR}/runs/${OUT_NAME}_prediction"* "${ARTIFACT_DIR}/"
 
 echo "Results successfully transferred!"

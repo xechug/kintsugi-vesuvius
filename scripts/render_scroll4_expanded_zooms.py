@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Render zoomed multi-line Greek text bands from the expanded Scroll 4 virgin scan."""
 from pathlib import Path
@@ -7,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-REPO_DIR = Path("/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge")
-ARTIFACT_DIR = Path("/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4")
+REPO_DIR = Path(__file__).resolve().parent.parent
+ARTIFACT_DIR = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
 
 # Load native overlay and raw probability
 overlay_img = Image.open(REPO_DIR / "runs/scroll4_virgin_expanded_prediction_native_overlay.png")

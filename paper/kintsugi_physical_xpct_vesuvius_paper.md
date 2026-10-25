@@ -1,8 +1,7 @@
 # Kintsugi Physical XPCT: Multi-Scale Differential Phase-Contrast Operators, Differentiable Sheet Unwarping, and Structure-Tensor Fiber Suppression for Cross-Scroll Ink Detection in Carbonized Herculaneum Papyri
 
-**Authors:** Jose M. Martin (`@xechug`) et al.  
+**Authors:** Jose Antonio Sanchez Martin
 **Repository:** [https://github.com/xechug/kintsugi-vesuvius](https://github.com/xechug/kintsugi-vesuvius) (MIT License)  
-**Humanitarian Pledge:** 50% of any Vesuvius Challenge prize proceeds awarded to this research are pledged to cancer research.
 
 ---
 
@@ -21,10 +20,12 @@ Across strictly held-out benchmarks with zero spatial leakage, Kintsugi Physical
 The eruption of Mount Vesuvius in 79 AD carbonized hundreds of papyrus scrolls in the Villa of the Papyri at Herculaneum. Pioneering work by **W. Brent Seales** and colleagues (Seales et al., 2016; Parker et al., 2019; Parsons et al., 2023) established the virtual unwrapping pipeline—comprising volumetric X-ray tomography, 3D papyrus sheet segmentation, surface-volume flattening, and machine-learning ink detection—culminating in the **Vesuvius Challenge** (Seales et al., 2023) and the 2023 Grand Prize reading of `PHerc.Paris.4` (Scroll 1) by **Youssef Nader, Luke Farritor, and Julian Schilliger**.
 
 Despite this triumph on Scroll 1 (scanned at $7.91\ \mu\text{m}$, $54\text{ keV}$ at Diamond Light Source), extending automated ink detection to the broader Herculaneum library has encountered a severe **cross-scroll domain shift**. New intact scroll acquisitions performed at the **European Synchrotron Radiation Facility (ESRF) BM18 beamline** (led by **Paul Tafforeau** and colleagues) operate in two distinct physical regimes:
+
 1. **High-Resolution Short-Propagation Regime (`PHerc1667` / Scroll 4)**: $2.399\ \mu\text{m}$ voxel size, $0.22\text{ m}$ propagation distance, $78\text{ keV}$ beam energy. Here, a typical $3.0\text{ mm}$ Greek letter spans $\sim 1{,}250\text{ px}$ (nearly $10\times$ larger than a standard $128\times 128$ receptive field).
 2. **Long-Propagation High-Energy Phase-Contrast Regime (`PHerc0139`, `PHerc0800`)**: $8.64\text{--}9.362\ \mu\text{m}$ voxel size, $1.2\text{ m}$ propagation distance, $113\text{--}116\text{ keV}$ beam energy. At $113\text{--}116\text{ keV}$ and $1.2\text{ m}$ free-space propagation, pure absorption contrast between carbon soot ink ($Z=6$) and carbonized papyrus ($Z=6$) vanishes; instead, contrast is governed by **Fresnel propagation phase interference** (Mocella et al., 2015; Brun et al., 2016), producing a characteristic second-derivative axial triplet: a bright central peak at the ink epidermis flanked by negative dark interference fringes in the adjacent air/papyrus transition layers.
 
 When standard 3D ink detectors (such as 3D ResNet, I3D, or TimeSformer models trained on raw voxel brightness $V(z,y,x)$ with small-patch local $Z$-score normalization) are evaluated across these regimes, we observe two systematic failure modes:
+
 - **Failure Mode A (Small-Patch Normalization Stroke Cancellation & Boundary Halos)**: Computing local $Z$-scores over $64\times 64$ or $128\times 128$ patches cancels the interior of $0.5\text{ mm}$ calligraphic strokes whenever a patch falls inside a thick stroke, while zero-padded rotated diamond segments (such as `PHerc0800`) induce bright perimeter halos.
 - **Failure Mode B (Vascular Fiber Confusion)**: Dense papyrus vascular bundles share the same raw brightness as carbon ink crusts, generating nearly $30\%$ false-positive activations along straight horizontal and vertical plant fibers.
 
@@ -33,9 +34,10 @@ When standard 3D ink detectors (such as 3D ResNet, I3D, or TimeSformer models tr
 ## 2. Related Work & Scientific Foundations
 
 Our formulation builds directly upon four foundational pillars of Herculaneum synchrotron physics and computer vision:
+
 1. **Propagation X-Ray Phase-Contrast Tomography (XPCT) of Herculaneum Papyri**: **Vito Mocella et al. (2015)** and **Emmanuel Brun et al. (2016)** first demonstrated that carbonized Herculaneum ink can be distinguished from papyrus fibers via propagation-based phase-contrast micro-CT, while **Pieter Tack et al. (2016)** characterized the trace elemental and micro-morphological profile of the ink crust. **Paul Tafforeau et al. (ESRF BM18)** scaled multi-resolution propagation XPCT ($78\text{--}116\text{ keV}$, $0.22\text{--}1.2\text{ m}$) to intact scrolls.
 2. **Virtual Unwrapping & Volumetric Ink Detection (`ink-id`)**: **W. Brent Seales, Stephen Parsons, Seth Parker, Christy Chapman**, and the EduceLab / Vesuvius Challenge team (**Giorgio Angelotti, Ben Kyles, Henderson**, et al.) created the `surface-volume` representation and the open-source `villa` / `ink-id` ecosystem (Parsons et al., 2023).
-3. **2023 Vesuvius Challenge Grand Prize Architectures**: **Youssef Nader, Luke Farritor, and Julian Schilliger (2023)** demonstrated the power of 3D spatiotemporal encoders (TimeSformer / 3D ResNet ensembles) and automated segmentation (` ThaumatoAnakalyptor`) on Scroll 1.
+3. **2023 Vesuvius Challenge Grand Prize Architectures**: **Youssef Nader, Luke Farritor, and Julian Schilliger (2023)** demonstrated the power of 3D spatiotemporal encoders (TimeSformer / 3D ResNet ensembles) and automated segmentation (`ThaumatoAnakalyptor`) on Scroll 1.
 4. **Smooth Noise-Robust Numerical Differentiation**: **Pavel Holoborodko (2008)** derived smooth low-pass digital differentiation filters that suppress high-frequency quantum and ring noise when computing first and second axial derivatives ($\partial _ z, \partial _ {zz}^2$) on discrete tomographic grids.
 
 ---

@@ -19,6 +19,7 @@ import math
 import socket
 import time
 import urllib.request
+import os
 from pathlib import Path
 
 socket.setdefaulttimeout(12.0)

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Render clean, human-readable black-ink-on-parchment letters for Scroll 4 Segment w023 (Hotspot #1)."""
 from pathlib import Path
@@ -7,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageFilter
 
-REPO_DIR = Path("/Users/jsmcore/.gemini/antigravity/scratch/vesuvius-challenge")
-ARTIFACT_DIR = Path("/Users/jsmcore/.gemini/antigravity/brain/facf1ebf-2061-4f7f-b872-c0129914aef4")
+REPO_DIR = Path(__file__).resolve().parent.parent
+ARTIFACT_DIR = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
 
 # Load prediction and native overlay
 prob_path = REPO_DIR / "runs/scroll4_w023_hotspot1_kintsugi_prediction.npy"
