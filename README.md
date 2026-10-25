@@ -17,27 +17,33 @@ Ancient Herculaneum ink (soot + gum arabic binder carbonized at $\sim 400^\circ\
 Rather than relying on raw voxel brightness, **Kintsugi** models the **3D micro-morphological and phase-contrast physics** of carbonized ink crusts:
 
 1. **Global 3D Synchrotron Calibration & Planar Illumination Drift Removal (`normalize_slab_globally`)**:
-   $$\tilde{V}_{\text{global}}(z,y,x) = \frac{V(z,y,x) - \mu_{3\text{D}}}{\sigma_{3\text{D}} + \varepsilon} - \gamma \cdot \mathcal{B}_{129\times 129}\!\left(\bar{V}_{xy}\right)$$
+
+   $$\tilde{V} _ {\text{global}}(z,y,x) = \frac{V(z,y,x) - \mu _ {3\text{D}}}{\sigma _ {3\text{D}} + \varepsilon} - \gamma \cdot \mathcal{B} _ {129\times 129}\!\left(\bar{V} _ {xy}\right)$$
+
    Preserves the full axial $Z$-profile (air gap $\to$ Fresnel dark phase fringe $\to$ epidermal ink peak $\to$ papyrus interior) while removing low-frequency ($>1.2\text{ mm}$) synchrotron illumination drift without canceling $0.5\text{ mm}$ calligraphic stroke interiors.
 
 2. **8-Lens Differential Physical Stem (`PhysicalStem3D` in [`vesuvius_code/baselines.py`](vesuvius_code/baselines.py))**:
-   - **Lens 1**: Calibrated Synchrotron Attenuation $\tilde{V}_{\text{cal}}(z,y,x)$
-   - **Lens 2**: Macro Background-Subtracted Local Contrast $\tilde{V} - \mathcal{B}_{49\times 49}(\tilde{V})$
+   - **Lens 1**: Calibrated Synchrotron Attenuation $\tilde{V} _ {\text{cal}}(z,y,x)$
+   - **Lens 2**: Macro Background-Subtracted Local Contrast $\tilde{V} - \mathcal{B} _ {49\times 49}(\tilde{V})$
    - **Lens 3 & 6**: Fine ($d=1$) & Dilated ($d=2$) Noise-Robust Pavel Holoborodko Axial Gradient $\partial_z \tilde{V} = (\tilde{V} * (k_z^{(1)} \otimes g_3 \otimes g_3))$ with $k_z^{(1)} = \frac{1}{8}[-1, -2, 0, +2, +1]$ (isolates the air-papyrus epidermis interface)
    - **Lens 4 & 7**: Fine ($d=1$) & Dilated ($d=2$) Axial Phase-Contrast Laplacian $\partial_{zz}^2 \tilde{V}$ with $k_z^{(2)} = \frac{1}{4}[+1, 0, -2, 0, +1]$ (captures the bright epidermal peak flanked by dark Fresnel phase fringes at $z_0 \pm 4$)
-   - **Lens 5**: Planar Thermal Micro-Crackle Residual $\mathcal{R}_{xy} = \tilde{V} - (\tilde{V} * G_{5\times 5})$ + $2.4\ \mu\text{m}$ intra-cell micro-crackle standard deviation $\sigma_{8\times 8}$
-   - **Lens 8**: Local Patch $Z$-Score $\tilde{V}_{\text{patch}}$
+   - **Lens 5**: Planar Thermal Micro-Crackle Residual $\mathcal{R} _ {xy} = \tilde{V} - (\tilde{V} * G _ {5\times 5})$ + $2.4\ \mu\text{m}$ intra-cell micro-crackle standard deviation $\sigma _ {8\times 8}$
+   - **Lens 8**: Local Patch $Z$-Score $\tilde{V} _ {\text{patch}}$
 
 3. **Differentiable 3D Soft Sheet Unwarping (`SoftSheetUnwarper3D`)**:
-   $$\Delta\hat{z}(y,x) = \Delta z_{\max} \cdot \tanh\!\left(\frac{\mathcal{A}_{3\times 3}\!\left(\sum_{z=0}^{D-1}(z - z_c)\,w_z(y,x)\right)}{\Delta z_{\max}}\right)$$
-   Continuously realigns wavy papyrus fibers along $Z$ via differentiable linear gather prior to sequence mixing, regularized by Total Variation $\|\nabla_{xy} \Delta\hat{z}\|_1$.
+
+   $$\Delta\hat{z}(y,x) = \Delta z _ {\max} \cdot \tanh\!\left(\frac{\mathcal{A} _ {3\times 3}\!\left(\sum _ {z=0}^{D-1}(z - z_c)\,w_z(y,x)\right)}{\Delta z _ {\max}}\right)$$
+
+   Continuously realigns wavy papyrus fibers along $Z$ via differentiable linear gather prior to sequence mixing, regularized by Total Variation $\Vert{}\nabla _ {xy} \Delta\hat{z}\Vert{} _ 1$.
 
 4. **Tri-Axial Sequence Mixing (`AxialSequenceMixer3D`) + Multi-Scale Calligraphic Pyramid (`CalligraphicPyramid2D`)**:
    Combines bidirectional sequence mixing along $(Z, Y, X)$ at the 3D bottleneck with a 3-stage 2D multi-scale context pyramid ($1\times \to \tfrac{1}{2}\times \to \tfrac{1}{4}\times \to \tfrac{1}{8}\times$ with dilated bottleneck) so the effective receptive field spans complete $2.5\text{--}3.5\text{ mm}$ Greek letters.
 
 5. **Anisotropic Fiber-Texture Suppression Loss (`AnisotropicFiberSuppressionLoss` in [`vesuvius_code/losses.py`](vesuvius_code/losses.py))**:
-   $$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{Fable}}(\text{BCE} + \text{Tversky}) + \lambda_{\text{fiber}} \frac{\sum_{y,x} C_{\text{fiber}}(y,x)\,p(y,x)^2\,(1 - Y(y,x))}{\sum_{y,x}(1 - Y(y,x))}$$
-   where $C_{\text{fiber}} = \left(\frac{\lambda_1 - \lambda_2}{\lambda_1 + \lambda_2 + \varepsilon}\right)^2$ is the directional coherence of the 2D structure tensor $J = G_\rho * (\nabla S\,\nabla S^\top)$.
+
+   $$\mathcal{L} _ {\text{total}} = \mathcal{L} _ {\text{Fable}}(\text{BCE} + \text{Tversky}) + \lambda _ {\text{fiber}} \frac{\sum _ {y,x} C _ {\text{fiber}}(y,x)\,p(y,x)^2\,(1 - Y(y,x))}{\sum _ {y,x}(1 - Y(y,x))}$$
+
+   where $C _ {\text{fiber}} = \left(\frac{\lambda_1 - \lambda_2}{\lambda_1 + \lambda_2 + \varepsilon}\right)^2$ is the directional coherence of the 2D structure tensor $J = G_\rho * (\nabla S\,\nabla S^\top)$.
 
 ---
 
@@ -88,20 +94,17 @@ Rather than relying on raw voxel brightness, **Kintsugi** models the **3D micro-
 ├── tests/                    # Automated unit test suite
 └── LICENSE                   # MIT License
 ```
+## 4. Quickstart
 
-### Quickstart
-
-```bash
-# 1. Run unit tests and syntax verification
+### 1. Run unit tests and syntax verification
 ./venv/bin/python -m unittest discover -s tests -v
 ./venv/bin/python -m compileall -q vesuvius_code scripts
 
-# 2. Run Scroll Domain Adaptation (PHerc1667 + PHerc0139) & Virgin PHerc0800 Scan
+### 2. Run Scroll Domain Adaptation (PHerc1667 + PHerc0139) & Virgin PHerc0800 Scan
 PYTHONPATH=. ./venv/bin/python scripts/train_and_scan_kintsugi_scrolls.py
 
-# 3. Render Validation Figures & PHerc0800 First Letters Submission Sheet (with 1 cm & 3 mm scale bars)
+### 3. Render Validation Figures & PHerc0800 First Letters Submission Sheet (with 1 cm & 3 mm scale bars)
 PYTHONPATH=. ./venv/bin/python scripts/render_scroll_adaptation_and_p800_results.py
 
-# 4. Build the 9-Slide English Technical Presentation (.pptx)
+### 4. Build the 9-Slide English Technical Presentation (.pptx)
 PYTHONPATH=. ./venv/bin/python scripts/generate_english_presentation.py
-```
