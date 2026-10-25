@@ -284,7 +284,18 @@ def main():
     plt.tight_layout()
     fig.savefig(artifact_dir / "pherc0800_first_letters_submission_sheet.png", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
-    print("[+] Successfully generated all 4 validation & discovery figures in artifact directory!")
+
+    docs_fig_dir = repo_dir / "docs/figures"
+    docs_fig_dir.mkdir(parents=True, exist_ok=True)
+    import shutil
+    for fname in [
+        "scroll4_w013_before_vs_after_kintsugi_adaptation.png",
+        "pherc0139_w044_held_out_validation_9p36um.png",
+        "pherc0800_all_6_virgin_segments_atlas.png",
+        "pherc0800_first_letters_submission_sheet.png",
+    ]:
+        shutil.copy2(artifact_dir / fname, docs_fig_dir / fname)
+    print("[+] Successfully generated all 4 validation & discovery figures in artifact directory and docs/figures/!")
 
 
 if __name__ == "__main__":

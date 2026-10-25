@@ -35,37 +35,40 @@ runpodctl user
 echo ""
 echo "=== 2. Creating RunPod Pod for Kintsugi Scroll Adaptation & PHerc0800 Virgin Scan ==="
 CANDIDATE_GPUS=(
-    "NVIDIA A40"
-    "NVIDIA RTX PRO 4500 Blackwell"
     "NVIDIA GeForce RTX 4090"
-    "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+    "NVIDIA A40"
+    "NVIDIA L40S"
+    "NVIDIA RTX PRO 4500 Blackwell"
 )
 
 CREATE_OUTPUT=""
 for GPU in "${CANDIDATE_GPUS[@]}"; do
-    echo "Attempting to create pod with GPU: ${GPU}..."
-    if CREATE_OUTPUT=$(runpodctl pod create \
-        --name "kintsugi-scroll-p800" \
-        --template-id "runpod-torch-v280" \
-        --gpu-id "${GPU}" \
-        --cloud-type "SECURE" \
-        --container-disk-in-gb 30 \
-        --volume-in-gb 20 \
-        --volume-mount-path "/workspace" \
-        --ports "22/tcp" \
-        --ssh \
-        --wait \
-        --wait-timeout "6m" 2>&1); then
-        echo "Successfully provisioned with ${GPU}!"
-        break
-    else
-        echo "Failed or timed out with ${GPU}, cleaning up any partial pod before trying next..."
-        for pid in $(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' 2>/dev/null || true); do
-            if [ -n "${pid}" ] && [ "${pid}" != "null" ]; then
-                runpodctl pod delete "${pid}" || true
-            fi
-        done
-    fi
+    for CTYPE in "COMMUNITY" "SECURE"; do
+        echo "Attempting to create pod with GPU: ${GPU} (${CTYPE})..."
+        if CREATE_OUTPUT=$(runpodctl pod create \
+            --name "kintsugi-scroll-p800" \
+            --template-id "runpod-torch-v280" \
+            --gpu-id "${GPU}" \
+            --cloud-type "${CTYPE}" \
+            --min-cuda-version "12.8" \
+            --container-disk-in-gb 30 \
+            --volume-in-gb 20 \
+            --volume-mount-path "/workspace" \
+            --ports "22/tcp" \
+            --ssh \
+            --wait \
+            --wait-timeout "6m" 2>&1); then
+            echo "Successfully provisioned with ${GPU} (${CTYPE})!"
+            break 2
+        else
+            echo "Failed or timed out with ${GPU} (${CTYPE}), cleaning up any partial pod before trying next..."
+            for pid in $(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' 2>/dev/null || true); do
+                if [ -n "${pid}" ] && [ "${pid}" != "null" ]; then
+                    runpodctl pod delete "${pid}" || true
+                fi
+            done
+        fi
+    done
 done
 
 POD_ID=$(echo "${CREATE_OUTPUT}" | jq -r '.id // empty' 2>/dev/null || true)
@@ -154,4 +157,10 @@ echo ""
 echo "=== 8. Re-rendering Figures and English Presentation with Heavy RunPod Outputs ==="
 PYTHONPATH="${REPO_DIR}" "${REPO_DIR}/venv/bin/python" "${REPO_DIR}/scripts/render_scroll_adaptation_and_p800_results.py"
 PYTHONPATH="${REPO_DIR}" "${REPO_DIR}/venv/bin/python" "${REPO_DIR}/scripts/generate_english_presentation.py"
+
+echo ""
+echo "=== 9. Committing & Pushing Updated RunPod Heavy Outputs to GitHub (xechug/kintsugi-vesuvius) ==="
+git add runs/p800_and_scroll_adaptation/metrics_report.json docs/figures/ Kintsugi_Physical_XPCT_Vesuvius_2026.pptx || true
+git commit -m "chore: update PHerc0800 and scroll adaptation outputs from RunPod GPU pass" || true
+git push origin main || true
 
