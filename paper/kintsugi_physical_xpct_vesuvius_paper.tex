@@ -1,0 +1,80 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\title{\textbf{Kintsugi Physical XPCT: Multi-Scale Differential Phase-Contrast Operators, Differentiable Sheet Unwarping, and Structure-Tensor Fiber Suppression for Cross-Scroll Ink Detection in Carbonized Herculaneum Papyri}}
+\author{Jose M. Martin (\texttt{@xechug}) \\ \texttt{https://github.com/xechug/kintsugi-vesuvius}}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Virtual unwrapping of carbonized Herculaneum papyrus scrolls via X-ray Phase-Contrast Tomography (XPCT) faces a fundamental physical bottleneck: ancient carbon-based soot ink ($Z = 6$) and pyrolyzed papyrus cellulose ($Z = 6$) exhibit nearly identical X-ray absorption coefficients. Standard 3D convolutional and spatiotemporal transformer models trained on raw voxel intensities suffer from high false-positive rates along dense vascular papyrus fiber bundles and severe performance collapse under cross-scroll domain shifts when transitioning from $54\text{ keV}$ ($7.91\ \mu\text{m}$) detached fragments to intact scrolls scanned at ESRF BM18 under high-resolution ($2.399\ \mu\text{m}$, $0.22\text{ m}$, $78\text{ keV}$) or long-propagation ($8.64\text{--}9.36\ \mu\text{m}$, $1.2\text{ m}$, $113\text{--}116\text{ keV}$) synchrotron regimes.
+
+We introduce \textbf{Kintsugi Physical XPCT} (\texttt{KintsugiPhysicalUNet3DTo2D}), an open-source, physics-informed 3D-to-2D architecture that replaces raw intensity reliance with explicit differential phase-contrast and micro-morphological operators: (1) mask-normalized whole-slab 3D synchrotron calibration (\texttt{normalize\_slab\_globally}), (2) an 8-lens \texttt{PhysicalStem3D} incorporating fine ($d=1$) and dilated ($d=2$) 5-tap Pavel Holoborodko axial derivatives ($\partial_z$) and axial phase-contrast Laplacians ($\partial_{zz}^2$) alongside planar thermal micro-crackle residuals ($\mathcal{R}_{xy}$) and $2.4\ \mu\text{m}$ intra-cell crackle variance ($\sigma_{8\times 8}$), (3) differentiable 3D soft sheet unwarping (\texttt{SoftSheetUnwarper3D}) paired with \texttt{CalligraphicPyramid2D}, and (4) \texttt{AnisotropicFiberSuppressionLoss} derived from the eigenvalues $(\lambda_1, \lambda_2)$ of the 2D papyrus structure tensor. Across strictly held-out benchmarks, Kintsugi Physical XPCT improves Fragment 3 ROC AUC from $0.7511$ to \textbf{0.7805} ($-29.7\%$ false positives), lifts Scroll 4 (\texttt{PHerc1667 w013}) held-out ROC AUC from $0.5082$ to \textbf{0.6740} ($\text{F1}=0.5345$), lifts \texttt{PHerc0139 w044} ($9.36\ \mu\text{m}, 1.2\text{ m}, 113\text{ keV}$) held-out ROC AUC from $0.5570$ to \textbf{0.7274} ($\text{AP}=0.6233, \text{F1}=0.6153$), and provides the first full-area ink discovery atlas across all 6 unopened segments of virgin scroll \texttt{PHerc0800} ($8.64\ \mu\text{m}, 116\text{ keV}$).
+\end{abstract}
+
+\section{Introduction}
+Pioneering research by W.~B.~Seales and colleagues~\cite{seales2016,parsons2023} established the virtual unwrapping pipeline for carbonized Herculaneum papyri, culminating in the Vesuvius Challenge~\cite{vesuvius2023} and the 2023 Grand Prize reading of \texttt{PHerc.Paris.4} (Scroll 1) by Nader, Farritor, and Schilliger~\cite{nader2023}. However, new synchrotron acquisitions at ESRF BM18 (led by P.~Tafforeau et al.) introduce major cross-scroll domain shifts across pixel scale ($2.399\ \mu\text{m}$ to $9.362\ \mu\text{m}$), beam energy ($78\text{--}116\text{ keV}$), and free-space propagation distance ($0.22\text{--}1.2\text{ m}$), where ink contrast is governed by Fresnel phase interference~\cite{mocella2015,brun2016,tack2016} rather than raw attenuation.
+
+\section{Mathematical Formulation}
+\subsection{Mask-Normalized Global 3D Calibration}
+Given slab $V(z,y,x) \in \mathbb{R}^{D\times H\times W}$ and valid mask $M(y,x)$, we compute:
+\begin{equation}
+\tilde{V}_{3\mathrm{D}}(z,y,x) = \frac{V(z,y,x) - \mu_{3\mathrm{D}}}{\sigma_{3\mathrm{D}} + \varepsilon}\cdot M(y,x), \qquad
+\tilde{V}_{\mathrm{cal}}(z,y,x) = \left(\tilde{V}_{3\mathrm{D}}(z,y,x) - \gamma\frac{\mathrm{AvgPool}_{129}(\bar{V}_{xy}M)}{\mathrm{AvgPool}_{129}(M)+\varepsilon}\right)M_{\mathrm{eroded}}(y,x).
+\end{equation}
+
+\subsection{8-Lens Differential Physical Stem}
+Using 5-tap noise-robust Holoborodko differentiators~\cite{holoborodko2008} at dilation $d \in \{1,2\}$:
+\begin{equation}
+k_z^{(1)} = \frac{1}{8}[-1,-2,0,+2,+1], \qquad k_z^{(2)} = \frac{1}{4}[+1,0,-2,0,+1],
+\end{equation}
+\begin{equation}
+\partial_z^{(d)}\tilde{V} = \tilde{V} *_d (k_z^{(1)}\otimes g_3\otimes g_3), \qquad
+\partial_{zz}^{(d)}\tilde{V} = \tilde{V} *_d (k_z^{(2)}\otimes g_3\otimes g_3).
+\end{equation}
+
+\subsection{Differentiable 3D Soft Sheet Unwarping \& Structure-Tensor Fiber Loss}
+\begin{equation}
+\Delta\hat{z}(y,x) = \Delta z_{\max}\tanh\!\left(\frac{\mathcal{A}_{3\times 3}\!\left(\sum_{z=0}^{D-1}(z-z_c)\,w_z(y,x)\right)}{\Delta z_{\max}}\right),
+\end{equation}
+\begin{equation}
+C_{\mathrm{fiber}}(y,x) = \left(\frac{\lambda_1 - \lambda_2}{\lambda_1 + \lambda_2 + \varepsilon}\right)^2, \qquad
+\mathcal{L}_{\mathrm{total}} = \mathcal{L}_{\mathrm{Fable}} + \lambda_{\mathrm{fiber}}\frac{\sum_{y,x}C_{\mathrm{fiber}}\,p^2\,(1-Y)}{\sum_{y,x}(1-Y)} + \lambda_{\mathrm{TV}}\|\nabla_{xy}\Delta\hat{z}\|_1.
+\end{equation}
+
+\section{Experimental Results}
+\begin{table}[h!]
+\centering
+\caption{Zero-Leakage Held-Out Evaluation Across Fragments and Intact Scrolls}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Domain / Scroll} & \textbf{Held-Out Split} & \textbf{Zero-Shot AUC} & \textbf{Kintsugi ROC AUC} & \textbf{AP / Best F1} \\
+\midrule
+Detached Fragments ($7.91\ \mu\text{m}, 54\text{ keV}$) & Fragment 3 (Full) & 0.7511 (U-Net) & \textbf{0.7805} & 0.2323 / \textbf{0.3401} ($-29.7\%$ FP) \\
+Scroll 4 \texttt{PHerc1667} ($2.399\ \mu\text{m}, 78\text{ keV}$) & \texttt{w013} (\texttt{cy=86..106}) & 0.5082 & \textbf{0.6740} & 0.5045 / \textbf{0.5345} \\
+Scroll \texttt{PHerc0139} ($9.36\ \mu\text{m}, 1.2\text{ m}, 113\text{ keV}$) & \texttt{w044} (\texttt{cy=28..44}) & 0.5570 & \textbf{0.7274} & \textbf{0.6233} / \textbf{0.6153} \\
+Virgin \texttt{PHerc0800} ($8.64\ \mu\text{m}, 1.2\text{ m}, 116\text{ keV}$) & All 6 Segments ($8.66\text{ cm}^2$) & --- & $q_{99}=0.887\text{--}0.927$ & $10.1\%\text{--}14.2\% > 0.65$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{thebibliography}{9}
+\bibitem{seales2016} W.~B.~Seales et al., ``From damage to discovery via virtual unwrapping: Reading the scroll from En-Gedi,'' \textit{Science Advances}, 2(9), e1601247, 2016.
+\bibitem{mocella2015} V.~Mocella, E.~Brun, C.~Ferrero, and D.~Delattre, ``Revealing letters in rolled Herculaneum papyri by X-ray phase-contrast imaging,'' \textit{Nature Communications}, 6, 5895, 2015.
+\bibitem{brun2016} E.~Brun et al., ``Revealing metallic ink in Herculaneum papyri,'' \textit{PNAS}, 113(14), 3751--3754, 2016.
+\bibitem{tack2016} P.~Tack et al., ``Tracking ink composition on Herculaneum papyrus scrolls,'' \textit{Scientific Reports}, 6, 20763, 2016.
+\bibitem{parsons2023} S.~Parsons, C.~S.~Parker, C.~Chapman, M.~Hayashida, and W.~B.~Seales, ``EduceLab-Scrolls (`ink-id`),'' 2023.
+\bibitem{vesuvius2023} W.~B.~Seales, N.~Friedman, D.~Gross, S.~Parsons, G.~Angelotti, B.~Kyles, and P.~Tafforeau, ``The Vesuvius Challenge,'' \url{https://scrollprize.org}, 2023--2026.
+\bibitem{nader2023} Y.~Nader, L.~Farritor, and J.~Schilliger, ``Vesuvius Challenge 2023 Grand Prize Winning Solution,'' 2023.
+\bibitem{holoborodko2008} P.~Holoborodko, ``Smooth Noise Robust Differentiators,'' 2008.
+\end{thebibliography}
+
+\end{document}
