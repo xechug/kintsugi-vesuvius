@@ -1,0 +1,106 @@
+{
+  "phase1a_w013_2p4um": {
+    "train_segment": "PHerc1667 w018 + disjoint w013 (tr1, tr2 at 2.399 um)",
+    "held_out_val_segment": "PHerc1667 w013 (cy=86..106, cx=62..87)",
+    "zeroshot_fragment_roc_auc": 0.5082,
+    "scroll_adapted_roc_auc": 0.674,
+    "scroll_adapted_ap": 0.5045,
+    "scroll_adapted_best_f1": 0.5274,
+    "best_threshold": 0.3831
+  },
+  "phase1b_w044_9p36um": {
+    "train_segments": "PHerc0139 w035, w040, w041 (9.362 um, 1.2m, 113 keV)",
+    "held_out_val_segment": "PHerc0139 w044 (cy=28..44, cx=20..36)",
+    "zeroshot_fragment_roc_auc": 0.557,
+    "scroll_adapted_roc_auc": 0.606,
+    "scroll_adapted_ap": 0.4896,
+    "scroll_adapted_best_f1": 0.5617,
+    "best_threshold": 0.4961
+  },
+  "phase2_pherc0800_virgin_segments": [
+    {
+      "segment_id": "20251028222030-auto_grown_20251028222030940",
+      "short_id": "20251028222030",
+      "shape": [
+        31,
+        2580,
+        2580
+      ],
+      "valid_area_cm2": 2.21,
+      "q95_score": 0.6419,
+      "q99_score": 0.6977,
+      "frac_gt_0p65": 0.04,
+      "elapsed_sec": 48.1
+    },
+    {
+      "segment_id": "20251028225813-auto_grown_20251028225813045",
+      "short_id": "20251028225813",
+      "shape": [
+        31,
+        2300,
+        2260
+      ],
+      "valid_area_cm2": 1.72,
+      "q95_score": 0.6543,
+      "q99_score": 0.7076,
+      "frac_gt_0p65": 0.0558,
+      "elapsed_sec": 32.5
+    },
+    {
+      "segment_id": "20251028213516-auto_grown_20251028213516907",
+      "short_id": "20251028213516",
+      "shape": [
+        31,
+        2160,
+        2240
+      ],
+      "valid_area_cm2": 1.6,
+      "q95_score": 0.6493,
+      "q99_score": 0.7082,
+      "frac_gt_0p65": 0.0493,
+      "elapsed_sec": 33.6
+    },
+    {
+      "segment_id": "20251028220042-auto_grown_20251028220042762",
+      "short_id": "20251028220042",
+      "shape": [
+        31,
+        2040,
+        2000
+      ],
+      "valid_area_cm2": 1.48,
+      "q95_score": 0.6747,
+      "q99_score": 0.753,
+      "frac_gt_0p65": 0.073,
+      "elapsed_sec": 25.3
+    },
+    {
+      "segment_id": "20251028220955-auto_grown_20251028220955262",
+      "short_id": "20251028220955",
+      "shape": [
+        31,
+        2100,
+        2100
+      ],
+      "valid_area_cm2": 1.42,
+      "q95_score": 0.6569,
+      "q99_score": 0.7167,
+      "frac_gt_0p65": 0.0579,
+      "elapsed_sec": 32.3
+    },
+    {
+      "segment_id": "20251029010146-auto_grown_20251029010146642",
+      "short_id": "20251029010146",
+      "shape": [
+        31,
+        980,
+        980
+      ],
+      "valid_area_cm2": 0.31,
+      "q95_score": 0.6577,
+      "q99_score": 0.7395,
+      "frac_gt_0p65": 0.0594,
+      "elapsed_sec": 6.3
+    }
+  ]
+}

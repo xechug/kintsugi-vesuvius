@@ -71,12 +71,25 @@ class PhysicalStem3D(nn.Module):
     2. Smooth first derivative along Z (air-papyrus boundary, Holoborodko-style).
     3. Smooth second derivative along Z (phase Laplacian on ink crust).
     4. Planar high-frequency residual (thermal crackle pattern / micro-fissures).
+    When multi_scale=True (for full-scroll synchrotron scans at 2.4-9.36 um), adds:
+    5. Local planar illumination-normalized contrast (removes phase fringes).
+    6. Dilated (d=3) axial first derivative along Z (macro sheet interface).
+    7. Dilated (d=3) axial second derivative along Z (macro phase Laplacian).
+    8. Dilated (d=3) planar crackle residual (stroke-scale micro-fissures).
     """
 
-    def __init__(self, in_channels: int = 1, eps: float = 1e-5, clamp_std: float = 4.0):
+    def __init__(
+        self,
+        in_channels: int = 1,
+        eps: float = 1e-5,
+        clamp_std: float = 4.0,
+        multi_scale: bool = False,
+    ):
         super().__init__()
         self.in_channels = int(in_channels)
-        self.out_channels = int(in_channels) * 4
+        self.multi_scale = bool(multi_scale)
+        self.num_lenses = 8 if self.multi_scale else 4
+        self.out_channels = int(in_channels) * self.num_lenses
         self.eps = float(eps)
         self.clamp_std = float(clamp_std)
 
@@ -107,19 +120,54 @@ class PhysicalStem3D(nn.Module):
         )
 
         flat = zscore.reshape(b * c, 1, z, y, width)
+        k_dz = self.kernel_dz.to(dtype=x.dtype, device=x.device)
+        k_dzz = self.kernel_dzz.to(dtype=x.dtype, device=x.device)
+        k_pl = self.kernel_planar.to(dtype=x.dtype, device=x.device)
+
         padded_z = _pad_replicate_3d(flat, pad_z=2, pad_y=1, pad_x=1)
-        dz = F.conv3d(padded_z, self.kernel_dz.to(dtype=x.dtype, device=x.device))
-        dzz = F.conv3d(padded_z, self.kernel_dzz.to(dtype=x.dtype, device=x.device))
+        dz = F.conv3d(padded_z, k_dz)
+        dzz = F.conv3d(padded_z, k_dzz)
 
         padded_xy = _pad_replicate_3d(flat, pad_z=0, pad_y=2, pad_x=2)
-        lowpass_xy = F.conv3d(
-            padded_xy, self.kernel_planar.to(dtype=x.dtype, device=x.device)
-        )
+        lowpass_xy = F.conv3d(padded_xy, k_pl)
         crackle = flat - lowpass_xy
 
-        stacked = torch.cat((flat, dz, dzz, crackle), dim=1).reshape(
-            b, c * 4, z, y, width
+        if not self.multi_scale:
+            stacked = torch.cat((flat, dz, dzz, crackle), dim=1).reshape(
+                b, c * 4, z, y, width
+            )
+            return self.norm(stacked)
+
+        # Multi-scale lenses for high-resolution / long-propagation scroll volumes
+        macro_bg = F.avg_pool3d(
+            _pad_replicate_3d(flat, pad_z=0, pad_y=24, pad_x=24),
+            kernel_size=(1, 49, 49),
+            stride=1,
         )
+        local_contrast = flat - macro_bg
+
+        padded_z_d2 = _pad_replicate_3d(flat, pad_z=4, pad_y=2, pad_x=2)
+        dz_macro = F.conv3d(padded_z_d2, k_dz, dilation=(2, 2, 2))
+        dzz_macro = F.conv3d(padded_z_d2, k_dzz, dilation=(2, 2, 2))
+
+        # Calibrated intensity relative to typical synchrotron scroll papyrus baseline
+        calibrated = ((x - 0.35) / 0.22).clamp(-self.clamp_std, self.clamp_std).reshape(
+            b * c, 1, z, y, width
+        )
+
+        stacked = torch.cat(
+            (
+                calibrated,
+                local_contrast,
+                dz,
+                dzz,
+                crackle,
+                dz_macro,
+                dzz_macro,
+                flat,
+            ),
+            dim=1,
+        ).reshape(b, c * 8, z, y, width)
         return self.norm(stacked)
 
 
@@ -173,6 +221,64 @@ class SoftSheetUnwarper3D(nn.Module):
         return warped, shift.squeeze(2)
 
 
+class CalligraphicPyramid2D(nn.Module):
+    """
+    3-stage 2D multi-scale context pyramid (1x -> 1/2x -> 1/4x -> 1/8x) operating on
+    the depth-projected 3D physical features so the receptive field spans full
+    Greek letters (~2.5-3.5 mm) in scroll surface volumes.
+    """
+
+    def __init__(self, channels: int, num_classes: int = 1):
+        super().__init__()
+        c = int(channels)
+        self.enc1 = nn.Sequential(
+            nn.Conv2d(c, c * 2, kernel_size=3, stride=2, padding=1),
+            _group_norm(c * 2),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(c * 2, c * 2, kernel_size=3, padding=1),
+            _group_norm(c * 2),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.enc2 = nn.Sequential(
+            nn.Conv2d(c * 2, c * 4, kernel_size=3, stride=2, padding=1),
+            _group_norm(c * 4),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(c * 4, c * 4, kernel_size=3, padding=1),
+            _group_norm(c * 4),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.enc3 = nn.Sequential(
+            nn.Conv2d(c * 4, c * 4, kernel_size=3, stride=2, padding=1),
+            _group_norm(c * 4),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(c * 4, c * 4, kernel_size=3, dilation=2, padding=2),
+            _group_norm(c * 4),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.dec2 = nn.Sequential(
+            nn.Conv2d(c * 8, c * 2, kernel_size=3, padding=1),
+            _group_norm(c * 2),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.dec1 = nn.Sequential(
+            nn.Conv2d(c * 4, c, kernel_size=3, padding=1),
+            _group_norm(c),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.out_head = nn.Conv2d(c * 2, num_classes, kernel_size=1)
+
+    def forward(self, feat_2d: torch.Tensor) -> torch.Tensor:
+        e1 = self.enc1(feat_2d)
+        e2 = self.enc2(e1)
+        e3 = self.enc3(e2)
+        u2 = F.interpolate(e3, size=e2.shape[-2:], mode="bilinear", align_corners=False)
+        d2 = self.dec2(torch.cat([e2, u2], dim=1))
+        u1 = F.interpolate(d2, size=e1.shape[-2:], mode="bilinear", align_corners=False)
+        d1 = self.dec1(torch.cat([e1, u1], dim=1))
+        u0 = F.interpolate(d1, size=feat_2d.shape[-2:], mode="bilinear", align_corners=False)
+        return self.out_head(torch.cat([feat_2d, u0], dim=1))
+
+
 class ResidualUNet3DTo2D(nn.Module):
     def __init__(
         self,
@@ -181,6 +287,7 @@ class ResidualUNet3DTo2D(nn.Module):
         base_channels=8,
         physical_stem=False,
         sheet_unwarp=False,
+        multi_scale_stem=False,
     ):
         super().__init__()
         self.in_channels = int(in_channels)
@@ -188,9 +295,13 @@ class ResidualUNet3DTo2D(nn.Module):
         self.base_channels = int(base_channels)
         self.physical_stem = bool(physical_stem)
         self.sheet_unwarp = bool(sheet_unwarp)
+        self.multi_scale_stem = bool(multi_scale_stem)
 
         self.stem = (
-            PhysicalStem3D(in_channels=self.in_channels)
+            PhysicalStem3D(
+                in_channels=self.in_channels,
+                multi_scale=self.multi_scale_stem,
+            )
             if self.physical_stem
             else None
         )
@@ -215,6 +326,11 @@ class ResidualUNet3DTo2D(nn.Module):
         )
         self.decoder = ResidualBlock3d(base_channels * 2, base_channels)
         self.head = LearnedDepthHead(base_channels, num_classes=num_classes)
+        self.pyramid_2d = (
+            CalligraphicPyramid2D(base_channels, num_classes=num_classes)
+            if self.multi_scale_stem
+            else None
+        )
         self.apply(init_weights)
 
     def encode_bottleneck(self, image):
@@ -237,6 +353,9 @@ class ResidualUNet3DTo2D(nn.Module):
             )
         decoded = self.decoder(torch.cat((skip, upsampled), dim=1))
         logits, depth_weights = self.head(decoded, return_weights=True)
+        if self.pyramid_2d is not None:
+            feat_2d = (decoded * depth_weights).sum(dim=2)
+            logits = 0.5 * logits + 0.5 * self.pyramid_2d(feat_2d)
         if return_aux:
             aux = {"depth_weights": depth_weights}
             if getattr(self, "_last_sheet_shift", None) is not None:
@@ -261,6 +380,8 @@ class ResidualUNet3DTo2D(nn.Module):
         }
         if self.physical_stem:
             config["physical_stem"] = True
+        if self.multi_scale_stem:
+            config["multi_scale_stem"] = True
         if self.sheet_unwarp:
             config["sheet_unwarp"] = True
         return config
@@ -332,6 +453,7 @@ class KintsugiAxialUNet3DTo2D(ResidualUNet3DTo2D):
         bidirectional=True,
         physical_stem=False,
         sheet_unwarp=False,
+        multi_scale_stem=False,
     ):
         super().__init__(
             in_channels=in_channels,
@@ -339,6 +461,7 @@ class KintsugiAxialUNet3DTo2D(ResidualUNet3DTo2D):
             base_channels=base_channels,
             physical_stem=physical_stem,
             sheet_unwarp=sheet_unwarp,
+            multi_scale_stem=multi_scale_stem,
         )
         self.axial_mixer = AxialSequenceMixer3D(
             channels=base_channels * 2,
@@ -383,6 +506,7 @@ class ResidualPhysicalUNet3DTo2D(ResidualUNet3DTo2D):
         base_channels=8,
         physical_stem=True,
         sheet_unwarp=True,
+        multi_scale_stem=False,
     ):
         super().__init__(
             in_channels=in_channels,
@@ -390,6 +514,7 @@ class ResidualPhysicalUNet3DTo2D(ResidualUNet3DTo2D):
             base_channels=base_channels,
             physical_stem=physical_stem,
             sheet_unwarp=sheet_unwarp,
+            multi_scale_stem=multi_scale_stem,
         )
 
 
@@ -403,6 +528,7 @@ class KintsugiPhysicalUNet3DTo2D(KintsugiAxialUNet3DTo2D):
         bidirectional=True,
         physical_stem=True,
         sheet_unwarp=True,
+        multi_scale_stem=False,
     ):
         super().__init__(
             in_channels=in_channels,
@@ -412,5 +538,6 @@ class KintsugiPhysicalUNet3DTo2D(KintsugiAxialUNet3DTo2D):
             bidirectional=bidirectional,
             physical_stem=physical_stem,
             sheet_unwarp=sheet_unwarp,
+            multi_scale_stem=multi_scale_stem,
         )
 

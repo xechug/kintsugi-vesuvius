@@ -31,17 +31,41 @@ from vesuvius_code.model_factory import build_model_from_config
 DEFAULT_SEGMENT = "20240304161941-w023_20240304161941_flatboi"
 
 
-def get_http_base(segment: str) -> str:
+def get_level_url(segment: str) -> str:
     return (
         f"https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc1667/segments/"
-        f"{segment}/surface-volumes/2.399um-0.22m-78keV-volume-20251217075048.zarr/0/0"
+        f"{segment}/surface-volumes/2.399um-0.22m-78keV-volume-20251217075048.zarr/0"
     )
 
 
+_ZARR_META: dict = {}
+
+
+def get_zarr_meta(level_url: str) -> dict:
+    """Read .zarray once to learn the chunk-key separator and compressor (segments differ)."""
+    if level_url not in _ZARR_META:
+        import json
+        with urllib.request.urlopen(f"{level_url}/.zarray", timeout=30) as resp:
+            _ZARR_META[level_url] = json.loads(resp.read())
+    return _ZARR_META[level_url]
+
+
+def decode_chunk(raw: bytes, meta: dict) -> np.ndarray | None:
+    if meta.get("compressor"):
+        import numcodecs
+        raw = numcodecs.get_codec(meta["compressor"]).decode(raw)
+    raw = bytes(raw)
+    if len(raw) != 109 * 128 * 128:
+        return None
+    return np.frombuffer(raw, dtype=np.uint8).reshape((109, 128, 128))
+
+
 def download_chunk(cy: int, cx: int, out_dir: Path, http_base: str) -> tuple[int, int, np.ndarray]:
+    meta = get_zarr_meta(http_base)
+    sep = meta.get("dimension_separator", ".")
     chunk_file = out_dir / f"chunk_{cy}_{cx}.bin"
     if not chunk_file.exists():
-        url = f"{http_base}/{cy}/{cx}"
+        url = f"{http_base}/{sep.join(['0', str(cy), str(cx)])}"
         for attempt in range(5):
             try:
                 req = urllib.request.Request(
@@ -64,9 +88,8 @@ def download_chunk(cy: int, cx: int, out_dir: Path, http_base: str) -> tuple[int
                     raise RuntimeError(f"Failed to download {url}: {e}")
                 time.sleep(1 + attempt)
     if chunk_file.exists():
-        raw = chunk_file.read_bytes()
-        if len(raw) == 1785856:
-            arr = np.frombuffer(raw, dtype=np.uint8).reshape((109, 128, 128))
+        arr = decode_chunk(chunk_file.read_bytes(), meta)
+        if arr is not None:
             return cy, cx, arr
     return cy, cx, np.zeros((109, 128, 128), dtype=np.uint8)
 
@@ -130,7 +153,7 @@ def main():
     y_chunks = range(args.y_start, args.y_start + num_y)
     x_chunks = range(args.x_start, args.x_start + num_x)
 
-    http_base = get_http_base(args.segment)
+    http_base = get_level_url(args.segment)
     vol = load_scroll4_volume(y_chunks, x_chunks, scratch_dir, http_base)
 
     # Load model

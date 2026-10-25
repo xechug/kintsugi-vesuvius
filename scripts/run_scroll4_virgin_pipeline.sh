@@ -139,7 +139,7 @@ echo "=== 6. Installing Dependencies & Running Inference on Virgin Scroll 4 (${S
 ${SSH_CMD} "bash -c '
     set -euo pipefail
     cd /workspace/kintsugi-vesuvius
-    pip install -q --break-system-packages matplotlib tifffile pillow
+    pip install -q --break-system-packages matplotlib tifffile pillow numcodecs
     export PYTHONPATH=.
     python3 scripts/scan_scroll4_virgin.py \
         --segment ${SEGMENT} \

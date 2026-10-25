@@ -1,0 +1,56 @@
+{
+  "residual_unet": {
+    "validation": {
+      "ap": 0.16407,
+      "prevalence": 0.153,
+      "lift_over_chance": 0.01107,
+      "best_f1": 0.26543,
+      "best_threshold": 0.15,
+      "fp_per_mpix_at_05": 3686.2
+    },
+    "test": {
+      "ap": 0.18658,
+      "prevalence": 0.13587,
+      "lift_over_chance": 0.05071,
+      "best_f1": 0.26221,
+      "best_threshold": 0.25,
+      "fp_per_mpix_at_05": 9510.3
+    }
+  },
+  "kintsugi_axial": {
+    "validation": {
+      "ap": 0.16772,
+      "prevalence": 0.153,
+      "lift_over_chance": 0.01473,
+      "best_f1": 0.26754,
+      "best_threshold": 0.25,
+      "fp_per_mpix_at_05": 49063.0
+    },
+    "test": {
+      "ap": 0.18155,
+      "prevalence": 0.13587,
+      "lift_over_chance": 0.04568,
+      "best_f1": 0.25965,
+      "best_threshold": 0.35,
+      "fp_per_mpix_at_05": 72360.6
+    }
+  },
+  "kintsugi_physical": {
+    "validation": {
+      "ap": 0.18417,
+      "prevalence": 0.153,
+      "lift_over_chance": 0.03117,
+      "best_f1": 0.27199,
+      "best_threshold": 0.4,
+      "fp_per_mpix_at_05": 115833.7
+    },
+    "test": {
+      "ap": 0.16993,
+      "prevalence": 0.13587,
+      "lift_over_chance": 0.03406,
+      "best_f1": 0.2477,
+      "best_threshold": 0.45,
+      "fp_per_mpix_at_05": 158838.6
+    }
+  }
+}
