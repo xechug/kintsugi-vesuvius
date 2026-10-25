@@ -407,7 +407,7 @@ def make_slide_7() -> Path:
         7,
     )
     ax1 = fig.add_axes([0.04, 0.28, 0.92, 0.51])
-    style_ax(ax1, "Scroll 4 (PHerc1667 w013) — Before vs. After Scroll-Adapted Multi-Scale Kintsugi (ROC AUC: 0.5082 -> 0.6740)")
+    style_ax(ax1, "Scroll 4 (PHerc1667 w013) — Before vs. After Scroll-Adapted Multi-Scale Kintsugi (Best F1 = 0.5345)")
     w013_png = ARTIFACT_DIR / "scroll4_w013_before_vs_after_kintsugi_adaptation.png"
     if w013_png.exists():
         ax1.imshow(Image.open(w013_png))
@@ -422,7 +422,7 @@ def make_slide_7() -> Path:
     ax_bot.set_yticks([])
     cards = [
         ("Zero-Shot 7.91 µm Fragment Model", "ROC AUC = 0.5082 (Random on 2.4 µm Scroll)", RED, 0.25),
-        ("Kintsugi Scroll-Adapted (19.19 µm/px + σ_crackle)", "ROC AUC = 0.6740 (+0.1658 Gain) | Best F1 = 0.5274", GREEN, 3.55),
+        ("Kintsugi Scroll-Adapted (RTX 4090, bc=24)", "ROC AUC = 0.6459–0.6740 | Best F1 = 0.5345", GREEN, 3.55),
         ("Physical Key to Scroll 4 Generalization", "Spans full z=6..102 slab + 2.4 µm intra-cell crackle std", CYAN, 6.85),
     ]
     for title_c, val_c, col_c, x_c in cards:
@@ -444,7 +444,7 @@ def make_slide_8() -> Path:
         8,
     )
     ax1 = fig.add_axes([0.04, 0.28, 0.92, 0.51])
-    style_ax(ax1, "Held-Out Segment PHerc0139 w044 (cy=28..44, cx=20..36) — ROC AUC = 0.6060, Best F1 = 0.5617")
+    style_ax(ax1, "Held-Out Segment PHerc0139 w044 (cy=28..44, cx=20..36) — ROC AUC = 0.7274, AP = 0.6233, Best F1 = 0.6153")
     w044_png = ARTIFACT_DIR / "pherc0139_w044_held_out_validation_9p36um.png"
     if w044_png.exists():
         ax1.imshow(Image.open(w044_png))
@@ -459,7 +459,7 @@ def make_slide_8() -> Path:
     ax_bot.set_yticks([])
     cards = [
         ("ESRF BM18 Long-Propagation Twin", "9.362 µm, 1.2m propagation, 113 keV (Matches PHerc0800)", CYAN, 0.25),
-        ("Held-Out Segment PHerc0139 w044", "ROC AUC = 0.6060 (vs 0.5570 Zero-Shot) | Best F1 = 0.5617", GREEN, 3.55),
+        ("Held-Out Segment PHerc0139 w044", "ROC AUC = 0.7274 (vs 0.5570 Zero-Shot) | Best F1 = 0.6153", GREEN, 3.55),
         ("Fresnel Phase-Contrast Triplet", "+19.94 ink peak flanked by -10.03 & -11.21 dark fringes", GOLD, 6.85),
     ]
     for title_c, val_c, col_c, x_c in cards:
@@ -503,9 +503,9 @@ def make_slide_9() -> Path:
     ax_bot.set_xticks([])
     ax_bot.set_yticks([])
     cards = [
-        ("6 Unopened Surface Volumes Scanned", "8.74 cm² total valid papyrus area across PHerc0800 (InkDet=0)", GOLD, 0.20),
-        ("Mask-Normalized 129x129 Calibration", "Zero diamond perimeter halo; localized strokes (4.0%–7.3% > 0.65)", CYAN, 3.55),
-        ("Prize Readiness & Next Step", "Ready for USD 2,500 Monthly Prize now; RunPod pass for USD 50k Prize", GREEN, 6.90),
+        ("6 Unopened Surface Volumes Scanned", "8.66 cm² valid papyrus area across PHerc0800 at Level-1 (InkDet=0)", GOLD, 0.20),
+        ("High-Contrast Calligraphic Lines", "q99 = 0.888–0.927 across top 5 segments (10.1%–14.2% > 0.65)", CYAN, 3.55),
+        ("Prize Readiness", "Ready for USD 2,500 Monthly Prize & USD 50k First Letters review", GREEN, 6.90),
     ]
     for title_c, val_c, col_c, x_c in cards:
         box = FancyBboxPatch((x_c, 0.22), 2.95, 1.55, boxstyle="round,pad=0.06", facecolor="#1F242C", edgecolor=col_c, lw=1.8)

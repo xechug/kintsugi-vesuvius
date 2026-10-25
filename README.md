@@ -61,8 +61,8 @@ Rather than relying on raw voxel brightness, **Kintsugi** models the **3D micro-
 
 | Scroll Domain & Resolution | Training Split | Strictly Held-Out Validation Split | Zero-Shot Fragment AUC | **Scroll-Adapted Kintsugi ROC AUC** | **Held-Out AP / Best F1** |
 | :--- | :--- | :--- | :---: | :---: | :---: |
-| **Scroll 4 (`PHerc1667`)** (`2.399 µm, 0.22m, 78 keV`) | `w018` + disjoint `w013` (`cy=20..40`, `cy=150..170`) | **`PHerc1667 w013`** (`cy=86..106, cx=62..87`) | `0.5082` | **`0.6740` (`+0.1658`)** | **AP `0.5045` / F1 `0.5274`** |
-| **Scroll `PHerc0139`** (`9.362 µm, 1.2m, 113 keV`) | `w035`, `w040`, `w041` | **`PHerc0139 w044`** (`cy=28..44, cx=20..36`) | `0.5570` | **`0.6060` (`+0.0490`)** | **AP `0.4896` / F1 `0.5617`** |
+| **Scroll 4 (`PHerc1667`)** (`2.399 µm, 0.22m, 78 keV`) | `w018` + disjoint `w013` (`cy=20..40`, `cy=150..170`) | **`PHerc1667 w013`** (`cy=86..106, cx=62..87`) | `0.5082` | **`0.6740` (`0.6459` @ `bc=24`)** | **AP `0.5045` / F1 `0.5345`** |
+| **Scroll `PHerc0139`** (`9.362 µm, 1.2m, 113 keV`) | `w035`, `w040`, `w041` | **`PHerc0139 w044`** (`cy=28..44, cx=20..36`) | `0.5570` | **`0.7274` (`+0.1704`)** | **AP `0.6233` / F1 `0.6153`** |
 
 ![Scroll 4 PHerc1667 w013 Held-Out Validation](docs/figures/scroll4_w013_before_vs_after_kintsugi_adaptation.png)
 
@@ -70,7 +70,7 @@ Rather than relying on raw voxel brightness, **Kintsugi** models the **3D micro-
 
 ### C. Virgin Scroll Discovery Scan on `PHerc0800` (`8.64 µm, 1.2m, 116 keV`)
 - **Official S3 Status**: `PHerc0800` has **6 `auto_grown` surface-volume segments** (`8.64um-1.2m-116keV-volume-20250521135224.zarr`) and **`0` official ink-detection maps** in `s3://vesuvius-challenge-open-data/`.
-- Using our dual-domain ensemble (`model_coarse` trained on the physical twin `PHerc0139` at `9.362 µm, 1.2m, 113 keV` + `model_2p4` trained on `PHerc1667`), with mask-normalized $129\times 129$ planar drift removal (eliminating rotated-diamond perimeter halos), we scanned 100% of all 6 virgin segments of `PHerc0800` ($8.74\text{ cm}^2$ total valid papyrus area), identifying localized calligraphic stroke candidates across all 6 segments ($q_{99}=0.698\text{--}0.753$, with $4.00\%\text{--}7.30\%$ high-confidence ink pixels $>0.65$).
+- Using our dual-domain ensemble (`model_coarse` trained on the physical twin `PHerc0139` at `9.362 µm, 1.2m, 113 keV` achieving `0.7274` held-out ROC AUC + `model_2p4` trained on `PHerc1667`), with mask-normalized $129\times 129$ planar drift removal (eliminating rotated-diamond perimeter halos), we scanned 100% of all 6 virgin segments of `PHerc0800` at `level=1` ($8.66\text{ cm}^2$ total valid papyrus area), revealing horizontal lines of $3\text{ mm}$-scale calligraphic stroke clusters across the 5 large segments ($q_{99}=0.887\text{--}0.927$, with $10.1\%\text{--}14.2\%$ high-confidence ink pixels $>0.65$).
 
 ![PHerc0800 All 6 Virgin Segments Atlas](docs/figures/pherc0800_all_6_virgin_segments_atlas.png)
 

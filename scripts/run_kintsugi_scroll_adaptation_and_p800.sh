@@ -33,47 +33,44 @@ echo "=== 1. Checking RunPod account balance ==="
 runpodctl user
 
 echo ""
-echo "=== 2. Creating RunPod Pod for Kintsugi Scroll Adaptation & PHerc0800 Virgin Scan ==="
-CANDIDATE_GPUS=(
-    "NVIDIA GeForce RTX 4090"
-    "NVIDIA A40"
-    "NVIDIA L40S"
-    "NVIDIA RTX PRO 4500 Blackwell"
-)
+echo "=== 2. Finding or Creating RunPod Pod for Kintsugi Scroll Adaptation & PHerc0800 Virgin Scan ==="
+EXISTING_ID=$(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' | head -n 1 || true)
 
-CREATE_OUTPUT=""
-for GPU in "${CANDIDATE_GPUS[@]}"; do
-    for CTYPE in "COMMUNITY" "SECURE"; do
-        echo "Attempting to create pod with GPU: ${GPU} (${CTYPE})..."
-        if CREATE_OUTPUT=$(runpodctl pod create \
-            --name "kintsugi-scroll-p800" \
-            --template-id "runpod-torch-v280" \
-            --gpu-id "${GPU}" \
-            --cloud-type "${CTYPE}" \
-            --min-cuda-version "12.8" \
-            --container-disk-in-gb 30 \
-            --volume-in-gb 20 \
-            --volume-mount-path "/workspace" \
-            --ports "22/tcp" \
-            --ssh \
-            --wait \
-            --wait-timeout "6m" 2>&1); then
-            echo "Successfully provisioned with ${GPU} (${CTYPE})!"
-            break 2
-        else
-            echo "Failed or timed out with ${GPU} (${CTYPE}), cleaning up any partial pod before trying next..."
-            for pid in $(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' 2>/dev/null || true); do
-                if [ -n "${pid}" ] && [ "${pid}" != "null" ]; then
-                    runpodctl pod delete "${pid}" || true
-                fi
-            done
-        fi
+if [ -n "${EXISTING_ID}" ] && [ "${EXISTING_ID}" != "null" ]; then
+    echo "Reusing existing Pod: ${EXISTING_ID}"
+    POD_ID="${EXISTING_ID}"
+else
+    CANDIDATE_GPUS=(
+        "NVIDIA GeForce RTX 4090"
+        "NVIDIA A40"
+        "NVIDIA L40S"
+    )
+    CREATE_OUTPUT=""
+    for GPU in "${CANDIDATE_GPUS[@]}"; do
+        for CTYPE in "SECURE" "COMMUNITY"; do
+            echo "Attempting to create pod with GPU: ${GPU} (${CTYPE})..."
+            if CREATE_OUTPUT=$(runpodctl pod create \
+                --name "kintsugi-scroll-p800" \
+                --template-id "runpod-torch-v280" \
+                --gpu-id "${GPU}" \
+                --cloud-type "${CTYPE}" \
+                --min-cuda-version "12.8" \
+                --container-disk-in-gb 30 \
+                --volume-in-gb 20 \
+                --volume-mount-path "/workspace" \
+                --ports "22/tcp" \
+                --ssh 2>&1); then
+                echo "Successfully placed Pod with ${GPU} (${CTYPE})!"
+                break 2
+            else
+                echo "Placement unavailable for ${GPU} (${CTYPE}), trying next..."
+            fi
+        done
     done
-done
-
-POD_ID=$(echo "${CREATE_OUTPUT}" | jq -r '.id // empty' 2>/dev/null || true)
-if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
-    POD_ID=$(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' | head -n 1)
+    POD_ID=$(echo "${CREATE_OUTPUT}" | jq -r '.id // empty' 2>/dev/null || true)
+    if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
+        POD_ID=$(runpodctl pod list -o json 2>/dev/null | jq -r '.[] | select(.name == "kintsugi-scroll-p800") | .id' | head -n 1)
+    fi
 fi
 
 if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
@@ -82,28 +79,25 @@ if [ -z "${POD_ID}" ] || [ "${POD_ID}" = "null" ]; then
 fi
 echo "Found Pod ID: ${POD_ID}"
 
-echo "=== 3. Extracting SSH Connection Details ==="
-SSH_HOST=$(echo "${CREATE_OUTPUT}" | jq -r '.ssh.ip // empty' 2>/dev/null || true)
-SSH_PORT=$(echo "${CREATE_OUTPUT}" | jq -r '.ssh.port // empty' 2>/dev/null || true)
-
-if [ -z "${SSH_HOST}" ] || [ "${SSH_HOST}" = "null" ] || [ -z "${SSH_PORT}" ] || [ "${SSH_PORT}" = "null" ]; then
-    for i in {1..12}; do
-        POD_DETAILS=$(runpodctl pod get "${POD_ID}" -o json 2>/dev/null || true)
-        SSH_HOST=$(echo "${POD_DETAILS}" | jq -r '.ssh.ip // empty' 2>/dev/null || true)
-        SSH_PORT=$(echo "${POD_DETAILS}" | jq -r '.ssh.port // empty' 2>/dev/null || true)
-        if [ -n "${SSH_HOST}" ] && [ "${SSH_HOST}" != "null" ] && [ -n "${SSH_PORT}" ] && [ "${SSH_PORT}" != "null" ]; then
-            break
-        fi
-        echo "Waiting for SSH info in pod get (attempt $i/12)..."
-        sleep 3
-    done
-fi
-
-if [ -z "${SSH_HOST}" ] || [ "${SSH_HOST}" = "null" ] || [ -z "${SSH_PORT}" ] || [ "${SSH_PORT}" = "null" ]; then
-    SSH_INFO=$(runpodctl ssh info "${POD_ID}" -o json 2>/dev/null || true)
-    SSH_HOST=$(echo "${SSH_INFO}" | jq -r '.ip // empty' 2>/dev/null || true)
-    SSH_PORT=$(echo "${SSH_INFO}" | jq -r '.port // empty' 2>/dev/null || true)
-fi
+echo "=== 3. Waiting for Container Boot & Direct SSH Connection Details ==="
+SSH_HOST=""
+SSH_PORT=""
+for i in {1..80}; do
+    POD_DETAILS=$(runpodctl pod get "${POD_ID}" -o json 2>/dev/null || true)
+    SSH_HOST=$(echo "${POD_DETAILS}" | jq -r '.ssh.ip // .ssh.direct.host // empty' 2>/dev/null || true)
+    SSH_PORT=$(echo "${POD_DETAILS}" | jq -r '.ssh.port // .ssh.direct.port // empty' 2>/dev/null || true)
+    if [ -z "${SSH_HOST}" ] || [ "${SSH_HOST}" = "null" ]; then
+        SSH_INFO=$(runpodctl ssh info "${POD_ID}" -o json 2>/dev/null || true)
+        SSH_HOST=$(echo "${SSH_INFO}" | jq -r '.ip // empty' 2>/dev/null || true)
+        SSH_PORT=$(echo "${SSH_INFO}" | jq -r '.port // empty' 2>/dev/null || true)
+    fi
+    if [ -n "${SSH_HOST}" ] && [ "${SSH_HOST}" != "null" ] && [ "${SSH_HOST}" != "ssh.runpod.io" ] && [ -n "${SSH_PORT}" ] && [ "${SSH_PORT}" != "null" ]; then
+        echo "Container initialized! Direct SSH ready at ${SSH_HOST}:${SSH_PORT}"
+        break
+    fi
+    echo "Container pulling/initializing on host (attempt $i/80)..."
+    sleep 5
+done
 
 echo "SSH Host: ${SSH_HOST}, SSH Port: ${SSH_PORT}"
 
