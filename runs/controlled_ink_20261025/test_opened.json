@@ -1,0 +1,53 @@
+{
+  "at_unix": 1792938156.7487104,
+  "checkpoints": [
+    {
+      "model": "residual",
+      "seed": 1337,
+      "parameters": 282659,
+      "checkpoint": "residual_seed1337.ckpt",
+      "sha256": "e0a8b0889b7fbdef00c0fd586bed6d7a0804e3d287993cdc1001446770554d20",
+      "train_seconds": 27.194856475049164
+    },
+    {
+      "model": "residual_physical",
+      "seed": 1337,
+      "parameters": 285828,
+      "checkpoint": "residual_physical_seed1337.ckpt",
+      "sha256": "d503ac2f934fad730ed64f9fa7be1772413eb5955b8cea4e14ae4721be8af01e",
+      "train_seconds": 33.240719809022266
+    },
+    {
+      "model": "kintsugi_physical",
+      "seed": 1337,
+      "parameters": 296164,
+      "checkpoint": "kintsugi_physical_seed1337.ckpt",
+      "sha256": "d387471eb1d3b4ece7fc69bc5f227f45d4fed3e4e7b1659f052baca608f05aab",
+      "train_seconds": 46.504568431992084
+    },
+    {
+      "model": "residual",
+      "seed": 2027,
+      "parameters": 282659,
+      "checkpoint": "residual_seed2027.ckpt",
+      "sha256": "3bc793d92ff84cb6432b5a364120826778c39920a089f47761b2bc530a17ddf7",
+      "train_seconds": 25.0740691240062
+    },
+    {
+      "model": "residual_physical",
+      "seed": 2027,
+      "parameters": 285828,
+      "checkpoint": "residual_physical_seed2027.ckpt",
+      "sha256": "53d3699c29d864fa799c8df0ccf0a4cbe6a1a51a760fdbed1d41ceb1449cb0ad",
+      "train_seconds": 32.73472563398536
+    },
+    {
+      "model": "kintsugi_physical",
+      "seed": 2027,
+      "parameters": 296164,
+      "checkpoint": "kintsugi_physical_seed2027.ckpt",
+      "sha256": "ea3c803a3cc3197cd2355c6ae60409056b22778da52dbbef600c99d67996be5f",
+      "train_seconds": 46.58695440401789
+    }
+  ]
+}

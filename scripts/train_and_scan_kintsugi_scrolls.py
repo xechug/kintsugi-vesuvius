@@ -33,46 +33,17 @@ from PIL import Image
 
 from vesuvius_code.baselines import KintsugiPhysicalUNet3DTo2D
 from vesuvius_code.losses import AnisotropicFiberSuppressionLoss, FableLoss
+from vesuvius_code.numpy_metrics import precision_recall_summary, roc_auc
 
 S3_ROOT = "https://vesuvius-challenge-open-data.s3.amazonaws.com"
 
 
 def roc_auc_np(y_true: np.ndarray, y_score: np.ndarray) -> float:
-    y_true = y_true.astype(np.int32).ravel()
-    y_score = y_score.astype(np.float64).ravel()
-    n1 = float(np.sum(y_true == 1))
-    n0 = float(np.sum(y_true == 0))
-    if n1 == 0 or n0 == 0:
-        return 0.5
-    order = np.argsort(y_score)
-    ranks = np.empty_like(order, dtype=np.float64)
-    ranks[order] = np.arange(1, len(y_score) + 1, dtype=np.float64)
-    return float((np.sum(ranks[y_true == 1]) - n1 * (n1 + 1.0) / 2.0) / (n1 * n0))
+    return roc_auc(y_true, y_score)
 
 
 def pr_auc_and_best_f1(y_true: np.ndarray, y_score: np.ndarray) -> tuple[float, float, float]:
-    y_true = (y_true.ravel() > 0).astype(np.int32)
-    y_score = y_score.ravel().astype(np.float32)
-    pos = float(y_true.sum())
-    if pos == 0:
-        return 0.0, 0.0, 0.5
-    if len(y_true) > 400_000:
-        rng = np.random.default_rng(1337)
-        idx = rng.choice(len(y_true), size=400_000, replace=False)
-        y_true = y_true[idx]
-        y_score = y_score[idx]
-        pos = float(y_true.sum())
-    order = np.argsort(-y_score)
-    y_sorted = y_true[order]
-    tp = np.cumsum(y_sorted, dtype=np.float64)
-    fp = np.cumsum(1 - y_sorted, dtype=np.float64)
-    prec = tp / np.maximum(tp + fp, 1.0)
-    rec = tp / pos
-    d_rec = np.diff(np.concatenate([[0.0], rec]))
-    ap = float(np.sum(prec * d_rec))
-    f1 = 2.0 * prec * rec / np.maximum(prec + rec, 1e-8)
-    best_idx = int(np.argmax(f1))
-    return ap, float(f1[best_idx]), float(y_score[order[best_idx]])
+    return precision_recall_summary(y_true, y_score)
 
 
 def get_zarr_meta(zarr_subpath: str, level: int = 0) -> dict:
@@ -404,6 +375,11 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     labels_npz = np.load(base_dir / "data/scroll_adaptation_labels.npz")
     frag_ckpt_path = base_dir / "runs/cloud_kintsugi_heavy_seed1337/best.strict.ckpt"
+    if not frag_ckpt_path.is_file():
+        raise FileNotFoundError(f"A trained fragment checkpoint is required: {frag_ckpt_path}")
+    torch.manual_seed(1337)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(1337)
 
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -428,8 +404,7 @@ def main():
         sheet_unwarp=True,
         multi_scale_stem=False,
     ).to(device)
-    if frag_ckpt_path.exists():
-        model_frag.load_state_dict(torch.load(frag_ckpt_path, map_location="cpu")["model_state"], strict=True)
+    model_frag.load_state_dict(torch.load(frag_ckpt_path, map_location="cpu")["model_state"], strict=True)
     model_frag.eval()
 
     # =========================================================================
@@ -519,11 +494,6 @@ def main():
     y_w013 = (ink_w013_l3[val_mask_w013] > 0).astype(np.int32)
     s_w013 = pred_w013_l3[val_mask_w013]
     auc_w013 = roc_auc_np(y_w013, s_w013)
-    if auc_w013 < 0.5:
-        pred_w013_l3 = 1.0 - pred_w013_l3
-        np.save(out_dir / "w013_kintsugi_scroll_adapted_l3.npy", pred_w013_l3)
-        s_w013 = pred_w013_l3[val_mask_w013]
-        auc_w013 = roc_auc_np(y_w013, s_w013)
     ap_w013, f1_w013, th_w013 = pr_auc_and_best_f1(y_w013, s_w013)
     print(f"  [!] HELD-OUT w013 RESULTS: ROC AUC = {auc_w013:.4f} (vs 0.5082 zero-shot), AP = {ap_w013:.4f}, Best F1 = {f1_w013:.4f}", flush=True)
 

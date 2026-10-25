@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "model": "residual",
+      "parameters": 282659,
+      "test_ap_mean": 0.3615527543738553,
+      "test_ap_min": 0.3404348334774586,
+      "test_ap_max": 0.382670675270252,
+      "test_auc_mean": 0.5504841137238604,
+      "test_f1_at_frozen_threshold_mean": 0.48256756388238936,
+      "test_fp_per_mpix_mean": 671776.012471392
+    },
+    {
+      "model": "residual_physical",
+      "parameters": 285828,
+      "test_ap_mean": 0.3298865787932438,
+      "test_ap_min": 0.3292672610741534,
+      "test_ap_max": 0.33050589651233414,
+      "test_auc_mean": 0.504971105922073,
+      "test_f1_at_frozen_threshold_mean": 0.4730053722490212,
+      "test_fp_per_mpix_mean": 635198.3067431756
+    },
+    {
+      "model": "kintsugi_physical",
+      "parameters": 296164,
+      "test_ap_mean": 0.35670708194580997,
+      "test_ap_min": 0.3411272581559651,
+      "test_ap_max": 0.3722869057356548,
+      "test_auc_mean": 0.5317399520389767,
+      "test_f1_at_frozen_threshold_mean": 0.4804725516940038,
+      "test_fp_per_mpix_mean": 671921.1250787755
+    }
+  ],
+  "test_prevalence": 0.31860302165909316,
+  "p800_selected_by_validation": "residual",
+  "p800_top_decile_jaccard": 0.08378681467470789,
+  "p800_depth_correlations": {
+    "-2": 0.8921989139263533,
+    "2": 0.8600936378608343
+  },
+  "official_depth_correlations": {
+    "seed42_z-2": 0.5997503563174802,
+    "seed42_z+0": 1.0,
+    "seed42_z+2": 0.5971149854659584,
+    "seed43_z-2": 0.6909136399108975,
+    "seed43_z+0": 1.0,
+    "seed43_z+2": 0.5950944332757759
+  },
+  "figures": [
+    "benchmark_w039.png",
+    "pherc0800_comparison.png",
+    "official_depth_sweep.png",
+    "known_ink_depth_profiles.png"
+  ]
+}

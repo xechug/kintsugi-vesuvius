@@ -15,6 +15,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+from vesuvius_code.numpy_metrics import roc_auc
 
 REPO = Path(__file__).resolve().parents[1]
 ART = Path(os.environ.get("VESUVIUS_ARTIFACT_DIR", Path(__file__).resolve().parent.parent / "docs" / "figures"))
@@ -25,13 +26,8 @@ DS = 8                                    # native -> label level 3
 
 
 def auc(score: np.ndarray, y: np.ndarray) -> float:
-    """Rank-based ROC AUC (Mann-Whitney U), no sklearn needed."""
-    order = np.argsort(score, kind="mergesort")
-    ranks = np.empty(len(score), dtype=np.float64)
-    ranks[order] = np.arange(1, len(score) + 1)
-    pos = y.astype(bool)
-    n1, n0 = pos.sum(), (~pos).sum()
-    return float((ranks[pos].sum() - n1 * (n1 + 1) / 2) / (n1 * n0))
+    """Tie-aware ROC AUC using the shared evaluation implementation."""
+    return roc_auc(y, score)
 
 
 def best_f1(score: np.ndarray, y: np.ndarray) -> tuple[float, float]:

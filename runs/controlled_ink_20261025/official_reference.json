@@ -1,0 +1,731 @@
+{
+  "source": {
+    "repository": "ScrollPrize/villa",
+    "commit": "47a9c37f6f8e99afdab47bb46ad425aa726f5dc0",
+    "files": 372
+  },
+  "models": [
+    {
+      "seed": 42,
+      "checkpoint_sha256": "e635558ae6a1a807a7e5ec1e83adfd45bc3c0ac53883ea43f1d4e085d62a9cab",
+      "checkpoint_url": "https://huggingface.co/scrollprize/ink_9um/blob/main/hybrid_3d2d-seed42/step-075000.pth",
+      "parameters": 34546498,
+      "strict_state_load": true,
+      "seconds": 5.1561764709767886,
+      "prediction_files": [
+        "official_seed42_z-2.npy",
+        "official_seed42_z+0.npy",
+        "official_seed42_z+2.npy"
+      ],
+      "training_config": {
+        "augmentation_preset": "default",
+        "augmentation_rotation_axes": [
+          0
+        ],
+        "batch_size": 64,
+        "best_checkpoint_metric": "val_balanced_accuracy",
+        "data_provenance": {
+          "augmentation_preset": "default",
+          "backbone_pretrained_path": null,
+          "backbone_pretrained_sha256": null,
+          "batch_size": 64,
+          "bce_label_smoothing": 0.5,
+          "depth_channels": 17,
+          "dice_label_smoothing": 0.0,
+          "fixed_scroll_prior_manifest": "/path/removed-for-release",
+          "fixed_scroll_prior_manifest_sha256": "0e20230f4d2517987f31baed4c6fc2fa8110d230ce2d14a60dfe5d6a838c68d1",
+          "learning_rate": 0.01,
+          "model_dimensionality": "hybrid_3d2d",
+          "native_9p362_inference_only": [
+            "w043"
+          ],
+          "native_9p362_representations": 5,
+          "normalization": "robust_mad",
+          "online_validation_cases": [
+            "pherc0139-w016",
+            "pherc0814-46527",
+            "pherc1667-w029"
+          ],
+          "patch_size_xy": 128,
+          "prepared_manifest": "/path/removed-for-release",
+          "public_pooled_representations": 24,
+          "representations": 29,
+          "reserved_validation_cases": [
+            "pherc0139-w016",
+            "pherc0139-w028",
+            "pherc0139-w029",
+            "pherc0814-46527",
+            "pherc1667-w018",
+            "pherc1667-w023",
+            "pherc1667-w028",
+            "pherc1667-w029",
+            "pherc1667-w031"
+          ],
+          "sampling_strategy": "fixed_scroll_prior_stratified",
+          "stride_xy": 32,
+          "validation_batches_per_event": 32,
+          "weight_decay": 3e-05,
+          "z_window_jitter_max_offset": 2
+        },
+        "dataloader_workers": 12,
+        "datasets": [
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc0139-w016": "0139:w016",
+              "pherc0139-w017": "0139:w017",
+              "pherc0139-w028": "0139:w028",
+              "pherc0139-w029": "0139:w029",
+              "pherc0139-w035": "0139:w035",
+              "pherc0139-w039": "0139:w039",
+              "pherc0139-w040": "0139:w040",
+              "pherc0139-w041": "0139:w041",
+              "pherc0139-w043": "0139:w043"
+            },
+            "sampling_representation_keys": {
+              "pherc0139-w016": "public_2p4_level2_zmean4:pherc0139-w016",
+              "pherc0139-w017": "public_2p4_level2_zmean4:pherc0139-w017",
+              "pherc0139-w028": "public_2p4_level2_zmean4:pherc0139-w028",
+              "pherc0139-w029": "public_2p4_level2_zmean4:pherc0139-w029",
+              "pherc0139-w035": "public_2p4_level2_zmean4:pherc0139-w035",
+              "pherc0139-w039": "public_2p4_level2_zmean4:pherc0139-w039",
+              "pherc0139-w040": "public_2p4_level2_zmean4:pherc0139-w040",
+              "pherc0139-w041": "public_2p4_level2_zmean4:pherc0139-w041",
+              "pherc0139-w043": "public_2p4_level2_zmean4:pherc0139-w043"
+            },
+            "sampling_scroll": "0139",
+            "segments": [
+              "pherc0139-w016",
+              "pherc0139-w017",
+              "pherc0139-w028",
+              "pherc0139-w029",
+              "pherc0139-w035",
+              "pherc0139-w039",
+              "pherc0139-w040",
+              "pherc0139-w041",
+              "pherc0139-w043"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc0139-w016": "/path/removed-for-release",
+              "pherc0139-w017": "/path/removed-for-release",
+              "pherc0139-w028": "/path/removed-for-release",
+              "pherc0139-w029": "/path/removed-for-release",
+              "pherc0139-w035": "/path/removed-for-release",
+              "pherc0139-w039": "/path/removed-for-release",
+              "pherc0139-w040": "/path/removed-for-release",
+              "pherc0139-w041": "/path/removed-for-release",
+              "pherc0139-w043": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "native_9p362_level0",
+            "sampling_physical_segment_keys": {
+              "w035": "0139:w035",
+              "w039": "0139:w039",
+              "w040": "0139:w040",
+              "w041": "0139:w041",
+              "w044": "0139:w044"
+            },
+            "sampling_representation_keys": {
+              "w035": "native_9p362_level0:w035",
+              "w039": "native_9p362_level0:w039",
+              "w040": "native_9p362_level0:w040",
+              "w041": "native_9p362_level0:w041",
+              "w044": "native_9p362_level0:w044"
+            },
+            "sampling_scroll": "0139",
+            "segments": [
+              "w035",
+              "w039",
+              "w040",
+              "w041",
+              "w044"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "w035": "/path/removed-for-release",
+              "w039": "/path/removed-for-release",
+              "w040": "/path/removed-for-release",
+              "w041": "/path/removed-for-release",
+              "w044": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc0814-46527": "0814:46527"
+            },
+            "sampling_representation_keys": {
+              "pherc0814-46527": "public_2p4_level2_zmean4:pherc0814-46527"
+            },
+            "sampling_scroll": "0814",
+            "segments": [
+              "pherc0814-46527"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc0814-46527": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc1667-w013": "1667:w013",
+              "pherc1667-w018": "1667:w018",
+              "pherc1667-w023": "1667:w023",
+              "pherc1667-w028": "1667:w028",
+              "pherc1667-w029": "1667:w029",
+              "pherc1667-w031": "1667:w031"
+            },
+            "sampling_representation_keys": {
+              "pherc1667-w013": "public_2p4_level2_zmean4:pherc1667-w013",
+              "pherc1667-w018": "public_2p4_level2_zmean4:pherc1667-w018",
+              "pherc1667-w023": "public_2p4_level2_zmean4:pherc1667-w023",
+              "pherc1667-w028": "public_2p4_level2_zmean4:pherc1667-w028",
+              "pherc1667-w029": "public_2p4_level2_zmean4:pherc1667-w029",
+              "pherc1667-w031": "public_2p4_level2_zmean4:pherc1667-w031"
+            },
+            "sampling_scroll": "1667",
+            "segments": [
+              "pherc1667-w013",
+              "pherc1667-w018",
+              "pherc1667-w023",
+              "pherc1667-w028",
+              "pherc1667-w029",
+              "pherc1667-w031"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc1667-w013": "/path/removed-for-release",
+              "pherc1667-w018": "/path/removed-for-release",
+              "pherc1667-w023": "/path/removed-for-release",
+              "pherc1667-w028": "/path/removed-for-release",
+              "pherc1667-w029": "/path/removed-for-release",
+              "pherc1667-w031": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "phercparis4-w00": "Paris4:w00",
+              "phercparis4-w01": "Paris4:w01",
+              "phercparis4-w02": "Paris4:w02",
+              "phercparis4-w03": "Paris4:w03",
+              "phercparis4-w05": "Paris4:w05",
+              "phercparis4-w06": "Paris4:w06",
+              "phercparis4-w07": "Paris4:w07",
+              "phercparis4-w09": "Paris4:w09"
+            },
+            "sampling_representation_keys": {
+              "phercparis4-w00": "public_2p4_level2_zmean4:phercparis4-w00",
+              "phercparis4-w01": "public_2p4_level2_zmean4:phercparis4-w01",
+              "phercparis4-w02": "public_2p4_level2_zmean4:phercparis4-w02",
+              "phercparis4-w03": "public_2p4_level2_zmean4:phercparis4-w03",
+              "phercparis4-w05": "public_2p4_level2_zmean4:phercparis4-w05",
+              "phercparis4-w06": "public_2p4_level2_zmean4:phercparis4-w06",
+              "phercparis4-w07": "public_2p4_level2_zmean4:phercparis4-w07",
+              "phercparis4-w09": "public_2p4_level2_zmean4:phercparis4-w09"
+            },
+            "sampling_scroll": "Paris4",
+            "segments": [
+              "phercparis4-w00",
+              "phercparis4-w01",
+              "phercparis4-w02",
+              "phercparis4-w03",
+              "phercparis4-w05",
+              "phercparis4-w06",
+              "phercparis4-w07",
+              "phercparis4-w09"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "phercparis4-w00": "/path/removed-for-release",
+              "phercparis4-w01": "/path/removed-for-release",
+              "phercparis4-w02": "/path/removed-for-release",
+              "phercparis4-w03": "/path/removed-for-release",
+              "phercparis4-w05": "/path/removed-for-release",
+              "phercparis4-w06": "/path/removed-for-release",
+              "phercparis4-w07": "/path/removed-for-release",
+              "phercparis4-w09": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          }
+        ],
+        "fixed_scroll_prior": {
+          "batch_size": 64,
+          "manifest": "/path/removed-for-release",
+          "manifest_sha256": "0e20230f4d2517987f31baed4c6fc2fa8110d230ce2d14a60dfe5d6a838c68d1",
+          "representation_count": 29,
+          "schema_version": 1,
+          "seed": 42,
+          "target_batch_counts": {
+            "0139": 29,
+            "0814": 2,
+            "1667": 22,
+            "Paris4": 11
+          }
+        },
+        "flat_z_window_jitter": {
+          "enabled": true,
+          "max_offset": 2,
+          "padding": "forbidden",
+          "probability": 1.0,
+          "training_only": true,
+          "window_depth": 17
+        },
+        "grad_clip": 1.0,
+        "image_normalization": {
+          "mode": "robust_mad",
+          "percentile_lower": 1.0,
+          "percentile_upper": 99.0
+        },
+        "in_channels": 1,
+        "learning_rate": 0.01,
+        "log_every": 50,
+        "loss": {
+          "bce_label_smoothing": 0.5,
+          "dice_label_smoothing": 0.0
+        },
+        "max_amp_overflow_events": 0,
+        "mixed_precision": "fp16",
+        "mode": "flat",
+        "model_config": {
+          "autoconfigure": true,
+          "basic_decoder_block": "ConvBlock",
+          "basic_encoder_block": "BasicBlockD",
+          "stem_channels": 16,
+          "z_projection_mode": "none"
+        },
+        "model_type": "vesuvius_unet_3d_stem_2d",
+        "num_iterations": 78125,
+        "optimizer": "sgd",
+        "out_dir": "/path/to/run-output",
+        "patch_cache_filename": "/path/removed-for-release",
+        "patch_min_labeled_coverage": 0.0,
+        "patch_overlap": 0.25,
+        "patch_size": [
+          17,
+          128,
+          128
+        ],
+        "pin_memory": true,
+        "sampling_audit_every": 200,
+        "sampling_strategy": "fixed_scroll_prior_stratified",
+        "save_every": 5000,
+        "scheduler": {
+          "name": "diffusers_cosine_warmup"
+        },
+        "seed": 42,
+        "targets": {
+          "ink": {
+            "activation": "none",
+            "out_channels": 1,
+            "z_projection_mode": "none"
+          }
+        },
+        "val_every": 5000,
+        "val_preview_batches": 1,
+        "val_steps": 32,
+        "verify_finite_gradients_steps": 0,
+        "volume_cache_dir": "/path/removed-for-release",
+        "volume_cache_max_gb": 400,
+        "warmup_steps": 1000,
+        "weight_decay": 3e-05,
+        "ema": {
+          "enabled": false,
+          "decay": 0.999,
+          "start_step": 0,
+          "update_every_steps": 1,
+          "validate": false,
+          "save_in_checkpoint": false
+        },
+        "volume_auth_json": null,
+        "crop_size": [
+          17,
+          128,
+          128
+        ],
+        "stitch_factor": 1,
+        "use_stitched_forward": false,
+        "stitched_gradient_checkpointing": true
+      }
+    },
+    {
+      "seed": 43,
+      "checkpoint_sha256": "2aeaa85a35ef28d7bc7bf3e848c4a6a91385e9132710927fdba41133c4ecb28f",
+      "checkpoint_url": "https://huggingface.co/scrollprize/ink_9um/blob/main/hybrid_3d2d-seed43/step-075000.pth",
+      "parameters": 34546498,
+      "strict_state_load": true,
+      "seconds": 4.600980060000438,
+      "prediction_files": [
+        "official_seed43_z-2.npy",
+        "official_seed43_z+0.npy",
+        "official_seed43_z+2.npy"
+      ],
+      "training_config": {
+        "augmentation_preset": "default",
+        "augmentation_rotation_axes": [
+          0
+        ],
+        "batch_size": 64,
+        "best_checkpoint_metric": "val_balanced_accuracy",
+        "data_provenance": {
+          "augmentation_preset": "default",
+          "backbone_pretrained_path": null,
+          "backbone_pretrained_sha256": null,
+          "batch_size": 64,
+          "bce_label_smoothing": 0.5,
+          "depth_channels": 17,
+          "dice_label_smoothing": 0.0,
+          "fixed_scroll_prior_manifest": "/path/removed-for-release",
+          "fixed_scroll_prior_manifest_sha256": "842c08872358533937bc7deb3b9a9ff75f4f45de47420d6bcbb2768c3f4fdc26",
+          "learning_rate": 0.01,
+          "model_dimensionality": "hybrid_3d2d",
+          "native_9p362_inference_only": [
+            "w043"
+          ],
+          "native_9p362_representations": 5,
+          "normalization": "robust_mad",
+          "online_validation_cases": [
+            "pherc0139-w016",
+            "pherc0814-46527",
+            "pherc1667-w029"
+          ],
+          "optimizer": "sgd",
+          "optimizer_betas": [
+            0.9,
+            0.999
+          ],
+          "optimizer_momentum": 0.99,
+          "optimizer_nesterov": true,
+          "patch_size_xy": 128,
+          "prepared_manifest": "/path/removed-for-release",
+          "public_pooled_representations": 24,
+          "representations": 29,
+          "reserved_validation_cases": [
+            "pherc0139-w016",
+            "pherc0139-w028",
+            "pherc0139-w029",
+            "pherc0814-46527",
+            "pherc1667-w018",
+            "pherc1667-w023",
+            "pherc1667-w028",
+            "pherc1667-w029",
+            "pherc1667-w031"
+          ],
+          "sampling_strategy": "fixed_scroll_prior_stratified",
+          "seed": 43,
+          "stride_xy": 32,
+          "validation_batches_per_event": 32,
+          "weight_decay": 3e-05,
+          "z_window_jitter_max_offset": 2
+        },
+        "dataloader_workers": 12,
+        "datasets": [
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc0139-w016": "0139:w016",
+              "pherc0139-w017": "0139:w017",
+              "pherc0139-w028": "0139:w028",
+              "pherc0139-w029": "0139:w029",
+              "pherc0139-w035": "0139:w035",
+              "pherc0139-w039": "0139:w039",
+              "pherc0139-w040": "0139:w040",
+              "pherc0139-w041": "0139:w041",
+              "pherc0139-w043": "0139:w043"
+            },
+            "sampling_representation_keys": {
+              "pherc0139-w016": "public_2p4_level2_zmean4:pherc0139-w016",
+              "pherc0139-w017": "public_2p4_level2_zmean4:pherc0139-w017",
+              "pherc0139-w028": "public_2p4_level2_zmean4:pherc0139-w028",
+              "pherc0139-w029": "public_2p4_level2_zmean4:pherc0139-w029",
+              "pherc0139-w035": "public_2p4_level2_zmean4:pherc0139-w035",
+              "pherc0139-w039": "public_2p4_level2_zmean4:pherc0139-w039",
+              "pherc0139-w040": "public_2p4_level2_zmean4:pherc0139-w040",
+              "pherc0139-w041": "public_2p4_level2_zmean4:pherc0139-w041",
+              "pherc0139-w043": "public_2p4_level2_zmean4:pherc0139-w043"
+            },
+            "sampling_scroll": "0139",
+            "segments": [
+              "pherc0139-w016",
+              "pherc0139-w017",
+              "pherc0139-w028",
+              "pherc0139-w029",
+              "pherc0139-w035",
+              "pherc0139-w039",
+              "pherc0139-w040",
+              "pherc0139-w041",
+              "pherc0139-w043"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc0139-w016": "/path/removed-for-release",
+              "pherc0139-w017": "/path/removed-for-release",
+              "pherc0139-w028": "/path/removed-for-release",
+              "pherc0139-w029": "/path/removed-for-release",
+              "pherc0139-w035": "/path/removed-for-release",
+              "pherc0139-w039": "/path/removed-for-release",
+              "pherc0139-w040": "/path/removed-for-release",
+              "pherc0139-w041": "/path/removed-for-release",
+              "pherc0139-w043": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "native_9p362_level0",
+            "sampling_physical_segment_keys": {
+              "w035": "0139:w035",
+              "w039": "0139:w039",
+              "w040": "0139:w040",
+              "w041": "0139:w041",
+              "w044": "0139:w044"
+            },
+            "sampling_representation_keys": {
+              "w035": "native_9p362_level0:w035",
+              "w039": "native_9p362_level0:w039",
+              "w040": "native_9p362_level0:w040",
+              "w041": "native_9p362_level0:w041",
+              "w044": "native_9p362_level0:w044"
+            },
+            "sampling_scroll": "0139",
+            "segments": [
+              "w035",
+              "w039",
+              "w040",
+              "w041",
+              "w044"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "w035": "/path/removed-for-release",
+              "w039": "/path/removed-for-release",
+              "w040": "/path/removed-for-release",
+              "w041": "/path/removed-for-release",
+              "w044": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc0814-46527": "0814:46527"
+            },
+            "sampling_representation_keys": {
+              "pherc0814-46527": "public_2p4_level2_zmean4:pherc0814-46527"
+            },
+            "sampling_scroll": "0814",
+            "segments": [
+              "pherc0814-46527"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc0814-46527": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "pherc1667-w013": "1667:w013",
+              "pherc1667-w018": "1667:w018",
+              "pherc1667-w023": "1667:w023",
+              "pherc1667-w028": "1667:w028",
+              "pherc1667-w029": "1667:w029",
+              "pherc1667-w031": "1667:w031"
+            },
+            "sampling_representation_keys": {
+              "pherc1667-w013": "public_2p4_level2_zmean4:pherc1667-w013",
+              "pherc1667-w018": "public_2p4_level2_zmean4:pherc1667-w018",
+              "pherc1667-w023": "public_2p4_level2_zmean4:pherc1667-w023",
+              "pherc1667-w028": "public_2p4_level2_zmean4:pherc1667-w028",
+              "pherc1667-w029": "public_2p4_level2_zmean4:pherc1667-w029",
+              "pherc1667-w031": "public_2p4_level2_zmean4:pherc1667-w031"
+            },
+            "sampling_scroll": "1667",
+            "segments": [
+              "pherc1667-w013",
+              "pherc1667-w018",
+              "pherc1667-w023",
+              "pherc1667-w028",
+              "pherc1667-w029",
+              "pherc1667-w031"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "pherc1667-w013": "/path/removed-for-release",
+              "pherc1667-w018": "/path/removed-for-release",
+              "pherc1667-w023": "/path/removed-for-release",
+              "pherc1667-w028": "/path/removed-for-release",
+              "pherc1667-w029": "/path/removed-for-release",
+              "pherc1667-w031": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          },
+          {
+            "provenance_role": "public_2p4_level2_zmean4",
+            "sampling_physical_segment_keys": {
+              "phercparis4-w00": "Paris4:w00",
+              "phercparis4-w01": "Paris4:w01",
+              "phercparis4-w02": "Paris4:w02",
+              "phercparis4-w03": "Paris4:w03",
+              "phercparis4-w05": "Paris4:w05",
+              "phercparis4-w06": "Paris4:w06",
+              "phercparis4-w07": "Paris4:w07",
+              "phercparis4-w09": "Paris4:w09"
+            },
+            "sampling_representation_keys": {
+              "phercparis4-w00": "public_2p4_level2_zmean4:phercparis4-w00",
+              "phercparis4-w01": "public_2p4_level2_zmean4:phercparis4-w01",
+              "phercparis4-w02": "public_2p4_level2_zmean4:phercparis4-w02",
+              "phercparis4-w03": "public_2p4_level2_zmean4:phercparis4-w03",
+              "phercparis4-w05": "public_2p4_level2_zmean4:phercparis4-w05",
+              "phercparis4-w06": "public_2p4_level2_zmean4:phercparis4-w06",
+              "phercparis4-w07": "public_2p4_level2_zmean4:phercparis4-w07",
+              "phercparis4-w09": "public_2p4_level2_zmean4:phercparis4-w09"
+            },
+            "sampling_scroll": "Paris4",
+            "segments": [
+              "phercparis4-w00",
+              "phercparis4-w01",
+              "phercparis4-w02",
+              "phercparis4-w03",
+              "phercparis4-w05",
+              "phercparis4-w06",
+              "phercparis4-w07",
+              "phercparis4-w09"
+            ],
+            "segments_path": "/path/removed-for-release",
+            "surface_volume_paths": {
+              "phercparis4-w00": "/path/removed-for-release",
+              "phercparis4-w01": "/path/removed-for-release",
+              "phercparis4-w02": "/path/removed-for-release",
+              "phercparis4-w03": "/path/removed-for-release",
+              "phercparis4-w05": "/path/removed-for-release",
+              "phercparis4-w06": "/path/removed-for-release",
+              "phercparis4-w07": "/path/removed-for-release",
+              "phercparis4-w09": "/path/removed-for-release"
+            },
+            "volume_scale": "0"
+          }
+        ],
+        "fixed_scroll_prior": {
+          "batch_size": 64,
+          "manifest": "/path/removed-for-release",
+          "manifest_sha256": "842c08872358533937bc7deb3b9a9ff75f4f45de47420d6bcbb2768c3f4fdc26",
+          "representation_count": 29,
+          "schema_version": 1,
+          "seed": 43,
+          "target_batch_counts": {
+            "0139": 29,
+            "0814": 2,
+            "1667": 22,
+            "Paris4": 11
+          }
+        },
+        "flat_z_window_jitter": {
+          "enabled": true,
+          "max_offset": 2,
+          "padding": "forbidden",
+          "probability": 1.0,
+          "training_only": true,
+          "window_depth": 17
+        },
+        "grad_clip": 1.0,
+        "image_normalization": {
+          "mode": "robust_mad",
+          "percentile_lower": 1.0,
+          "percentile_upper": 99.0
+        },
+        "in_channels": 1,
+        "learning_rate": 0.01,
+        "log_every": 50,
+        "loss": {
+          "bce_label_smoothing": 0.5,
+          "dice_label_smoothing": 0.0
+        },
+        "max_amp_overflow_events": 0,
+        "mixed_precision": "fp16",
+        "mode": "flat",
+        "model_config": {
+          "autoconfigure": true,
+          "basic_decoder_block": "ConvBlock",
+          "basic_encoder_block": "BasicBlockD",
+          "stem_channels": 16,
+          "z_projection_mode": "none"
+        },
+        "model_type": "vesuvius_unet_3d_stem_2d",
+        "num_iterations": 78125,
+        "optimizer": "sgd",
+        "optimizer_betas": [
+          0.9,
+          0.999
+        ],
+        "optimizer_momentum": 0.99,
+        "optimizer_nesterov": true,
+        "out_dir": "/path/to/run-output",
+        "patch_cache_filename": "/path/removed-for-release",
+        "patch_min_labeled_coverage": 0.0,
+        "patch_overlap": 0.25,
+        "patch_size": [
+          17,
+          128,
+          128
+        ],
+        "pin_memory": true,
+        "sampling_audit_every": 200,
+        "sampling_strategy": "fixed_scroll_prior_stratified",
+        "save_every": 5000,
+        "scheduler": {
+          "name": "diffusers_cosine_warmup"
+        },
+        "seed": 43,
+        "targets": {
+          "ink": {
+            "activation": "none",
+            "out_channels": 1,
+            "z_projection_mode": "none"
+          }
+        },
+        "val_every": 5000,
+        "val_preview_batches": 1,
+        "val_steps": 32,
+        "verify_finite_gradients_steps": 0,
+        "volume_cache_dir": "/path/removed-for-release",
+        "volume_cache_max_gb": 400,
+        "warmup_steps": 1000,
+        "weight_decay": 3e-05,
+        "ema": {
+          "enabled": false,
+          "decay": 0.999,
+          "start_step": 0,
+          "update_every_steps": 1,
+          "validate": false,
+          "save_in_checkpoint": false
+        },
+        "volume_auth_json": null,
+        "crop_size": [
+          17,
+          128,
+          128
+        ],
+        "stitch_factor": 1,
+        "use_stitched_forward": false,
+        "stitched_gradient_checkpointing": true
+      }
+    }
+  ],
+  "evaluation_policy": "Only unlabeled PHerc0800. w039 and w044 are in released models' training data and are not used for independent accuracy comparisons.",
+  "normalization": "Official normalize_robust, per 17x128x128 patch; raw sigmoid outputs retained.",
+  "native_um": 8.64,
+  "depth_offsets": [
+    -2,
+    0,
+    2
+  ]
+}

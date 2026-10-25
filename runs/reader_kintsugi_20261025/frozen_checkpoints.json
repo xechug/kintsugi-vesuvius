@@ -1,0 +1,66 @@
+[
+  {
+    "model": "kintsugi_alone",
+    "seed": 1337,
+    "checkpoint": "kintsugi_alone_seed1337.ckpt",
+    "sha256": "34ed859ab4d5a8082db4d8d28c96593df808aeb519c0c63022d3696f0954c74b",
+    "parameters": 296164,
+    "train_seconds": 0.0
+  },
+  {
+    "model": "reader_residual",
+    "seed": 1337,
+    "checkpoint": "reader_residual_seed1337.ckpt",
+    "sha256": "a7265c524c86032ceebbe0c92b299f863c5dabbb85b70e21367b585eb6f2c78e",
+    "parameters": 92597,
+    "train_seconds": 130.45657024299726
+  },
+  {
+    "model": "reader_kintsugi",
+    "seed": 1337,
+    "checkpoint": "reader_kintsugi_seed1337.ckpt",
+    "sha256": "bf583af8f0ff9d96be40ee0b00e8427e7f6300fff592a0977ecfbdfe682211ab",
+    "parameters": 296167,
+    "train_seconds": 316.0834827949293
+  },
+  {
+    "model": "reader_kintsugi_fiber",
+    "seed": 1337,
+    "checkpoint": "reader_kintsugi_fiber_seed1337.ckpt",
+    "sha256": "467fddf9feec2d0e097cd20cbd589ed7404b8f1f2871608f5168c7eaeb3686a7",
+    "parameters": 296167,
+    "train_seconds": 318.23498139576986
+  },
+  {
+    "model": "kintsugi_alone",
+    "seed": 2027,
+    "checkpoint": "kintsugi_alone_seed2027.ckpt",
+    "sha256": "7027e5d1e5c00c49ddcbf1960e2ee7b543b2e8fb32ee94cc9b377e77973509cb",
+    "parameters": 296164,
+    "train_seconds": 315.69643803685904
+  },
+  {
+    "model": "reader_residual",
+    "seed": 2027,
+    "checkpoint": "reader_residual_seed2027.ckpt",
+    "sha256": "3a0ca04cc874d7a72cb73e908da4ecbf5a001ba34bda3457f8f4e273728d0af5",
+    "parameters": 92597,
+    "train_seconds": 130.64730808883905
+  },
+  {
+    "model": "reader_kintsugi",
+    "seed": 2027,
+    "checkpoint": "reader_kintsugi_seed2027.ckpt",
+    "sha256": "c7bce934fdb88a10fd86f661c7a5fb8a9357b09b9ce46c029975072ef515fe27",
+    "parameters": 296167,
+    "train_seconds": 315.8583198301494
+  },
+  {
+    "model": "reader_kintsugi_fiber",
+    "seed": 2027,
+    "checkpoint": "reader_kintsugi_fiber_seed2027.ckpt",
+    "sha256": "b653c9530ab96b7ce0df2409273bd99a7c3cc2f312339cc6fd35ddec6ef934d1",
+    "parameters": 296167,
+    "train_seconds": 317.9831657363102
+  }
+]

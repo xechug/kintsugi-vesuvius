@@ -55,9 +55,13 @@ runs/**/*.pth
 runs/**/*.tif
 runs/**/*.tiff
 runs/**/*.png
+runs/**/known_hosts
+runs/**/runpod_state.json
+runs/**/runpod_attempt_*.json
 
 # Local scratch images in root
 overfit_prediction.png
 prediccion_kintsugi_marcada.png
 prediccion_kintsugi_parche.png
 prediction_sample.png
+runs/**/billing_final.json

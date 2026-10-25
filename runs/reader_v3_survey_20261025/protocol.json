@@ -1,0 +1,31 @@
+{
+  "model_repository": "domenicor046/reader-v3",
+  "model_revision": "aee1d64bced4eb35546348f3d276b9e2a0b99c46",
+  "reader_repository_commit": "4a9f1c633d2f30d9b522922ec1cb52c082013183",
+  "villa_runtime_commit": "47a9c37f6f8e99afdab47bb46ad425aa726f5dc0",
+  "native_um": 8.64,
+  "patch_size": 384,
+  "overlap": 0.5,
+  "blend_mode": "hann",
+  "directions": [
+    "forward",
+    "reverse"
+  ],
+  "depth_offsets": [
+    0
+  ],
+  "batch_size": 4,
+  "control_min_ap": 0.7,
+  "control_role": "Known labeled PHerc0139 w039, included in Reader training: plumbing and visual control only, never an independent accuracy estimate.",
+  "discovery_policy": "Scores are not calibrated probabilities or evidence of letters. Keep orientations separate; visually inspect full context, then depth shifts and spatial transforms before naming candidates. Novelty requires external expert and publication checks.",
+  "scroll": "PHerc0800",
+  "surface_volume": "8.64um-1.2m-116keV-volume-20250521135224.zarr",
+  "segments": [
+    "20251028213516-auto_grown_20251028213516907",
+    "20251028220042-auto_grown_20251028220042762",
+    "20251028220955-auto_grown_20251028220955262",
+    "20251028222030-auto_grown_20251028222030940",
+    "20251028225813-auto_grown_20251028225813045",
+    "20251029010146-auto_grown_20251029010146642"
+  ]
+}

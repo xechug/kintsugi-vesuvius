@@ -1,0 +1,22 @@
+{
+  "selected_by_validation": "residual",
+  "validation_ap_means": {
+    "residual": 0.4753262948240617,
+    "residual_physical": 0.4455373661952865,
+    "kintsugi_physical": 0.45439721000461486
+  },
+  "segment": "20251028222030-auto_grown_20251028222030940",
+  "window_chunks": [
+    6,
+    14,
+    6,
+    14
+  ],
+  "native_um": 8.64,
+  "depth_offsets": [
+    -2,
+    0,
+    2
+  ],
+  "interpretation": "Exploratory unlabeled crop at native 8.64um. Agreement or high score is not independent evidence of ink."
+}

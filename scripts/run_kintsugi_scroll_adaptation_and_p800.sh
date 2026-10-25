@@ -153,8 +153,6 @@ PYTHONPATH="${REPO_DIR}" "${REPO_DIR}/venv/bin/python" "${REPO_DIR}/scripts/rend
 PYTHONPATH="${REPO_DIR}" "${REPO_DIR}/venv/bin/python" "${REPO_DIR}/scripts/generate_english_presentation.py"
 
 echo ""
-echo "=== 9. Committing & Pushing Updated RunPod Heavy Outputs to GitHub (xechug/kintsugi-vesuvius) ==="
-git add runs/p800_and_scroll_adaptation/metrics_report.json docs/figures/ Kintsugi_Physical_XPCT_Vesuvius_2026.pptx || true
-git commit -m "chore: update PHerc0800 and scroll adaptation outputs from RunPod GPU pass" || true
-git push origin main || true
+echo "=== 9. Artifacts ready for local review ==="
+echo "Review the figures and metrics before publishing any results."
 

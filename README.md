@@ -6,6 +6,12 @@
 
 **Kintsugi Physical XPCT** is an open-source, physics-informed 3D-to-2D volumetric ink-detection architecture designed for **X-ray Phase-Contrast Tomography (XPCT)** of carbonized Herculaneum papyrus fragments and intact scrolls in the [Vesuvius Challenge](https://scrollprize.org).
 
+> **Controlled pilot, 2026-10-25:** a new w039 segment holdout, with two seeds and 400 optimizer steps per run, gave mean AP `0.3616` for the residual control and `0.3567` for Kintsugi Physical (convolutional fallback). This short experiment does not establish a physical-module advantage or confirm ink in PHerc0800. See the [protocol, results, raw-map references and limitations](docs/controlled-ink-experiment-2026-10-25.md).
+
+> **Reader v3 survey, 2026-10-25:** released weights recover the known-letter PHerc0139 control clearly. All six public PHerc0800 surface renders were then scanned at native 8.64 µm in both layer directions. No new legible characters were identified in those twelve maps. The control is part of Reader's training data and is not an independent accuracy benchmark. See the [review, full maps and verification](docs/reader-v3-review-and-survey-2026-10-25.md).
+
+> **Reader v3 + Kintsugi correction, 2026-10-25:** frozen Reader v3 with a trainable Kintsugi correction was tested on a sealed PHerc1447 w060 winding (two seeds, human labels). Kintsugi works far better as a correction (test AP `0.5368`) than alone (`0.4083`), but no variant met the pre-registered promotion rule over Reader v3 (`0.5300`), and the non-physical residual correction scored highest (`0.5475`). The physical modules show no demonstrated advantage yet. See the [protocol, results and limitations](docs/reader-kintsugi-experiment-2026-10-25.md).
+
 > **Humanitarian Commitment**: 50% of any Vesuvius Challenge prize proceeds awarded to this work are pledged to cancer research.
 
 ---

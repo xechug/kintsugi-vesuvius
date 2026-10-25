@@ -1,0 +1,152 @@
+{
+  "at_unix": 1792964483.694601,
+  "frozen": [
+    {
+      "model": "kintsugi_alone",
+      "seed": 1337,
+      "checkpoint": "kintsugi_alone_seed1337.ckpt",
+      "sha256": "34ed859ab4d5a8082db4d8d28c96593df808aeb519c0c63022d3696f0954c74b",
+      "parameters": 296164,
+      "train_seconds": 0.0
+    },
+    {
+      "model": "reader_residual",
+      "seed": 1337,
+      "checkpoint": "reader_residual_seed1337.ckpt",
+      "sha256": "a7265c524c86032ceebbe0c92b299f863c5dabbb85b70e21367b585eb6f2c78e",
+      "parameters": 92597,
+      "train_seconds": 130.45657024299726
+    },
+    {
+      "model": "reader_kintsugi",
+      "seed": 1337,
+      "checkpoint": "reader_kintsugi_seed1337.ckpt",
+      "sha256": "bf583af8f0ff9d96be40ee0b00e8427e7f6300fff592a0977ecfbdfe682211ab",
+      "parameters": 296167,
+      "train_seconds": 316.0834827949293
+    },
+    {
+      "model": "reader_kintsugi_fiber",
+      "seed": 1337,
+      "checkpoint": "reader_kintsugi_fiber_seed1337.ckpt",
+      "sha256": "467fddf9feec2d0e097cd20cbd589ed7404b8f1f2871608f5168c7eaeb3686a7",
+      "parameters": 296167,
+      "train_seconds": 318.23498139576986
+    },
+    {
+      "model": "kintsugi_alone",
+      "seed": 2027,
+      "checkpoint": "kintsugi_alone_seed2027.ckpt",
+      "sha256": "7027e5d1e5c00c49ddcbf1960e2ee7b543b2e8fb32ee94cc9b377e77973509cb",
+      "parameters": 296164,
+      "train_seconds": 315.69643803685904
+    },
+    {
+      "model": "reader_residual",
+      "seed": 2027,
+      "checkpoint": "reader_residual_seed2027.ckpt",
+      "sha256": "3a0ca04cc874d7a72cb73e908da4ecbf5a001ba34bda3457f8f4e273728d0af5",
+      "parameters": 92597,
+      "train_seconds": 130.64730808883905
+    },
+    {
+      "model": "reader_kintsugi",
+      "seed": 2027,
+      "checkpoint": "reader_kintsugi_seed2027.ckpt",
+      "sha256": "c7bce934fdb88a10fd86f661c7a5fb8a9357b09b9ce46c029975072ef515fe27",
+      "parameters": 296167,
+      "train_seconds": 315.8583198301494
+    },
+    {
+      "model": "reader_kintsugi_fiber",
+      "seed": 2027,
+      "checkpoint": "reader_kintsugi_fiber_seed2027.ckpt",
+      "sha256": "b653c9530ab96b7ce0df2409273bd99a7c3cc2f312339cc6fd35ddec6ef934d1",
+      "parameters": 296167,
+      "train_seconds": 317.9831657363102
+    }
+  ],
+  "selection": {
+    "candidate": null,
+    "exploratory_physical_model": "reader_kintsugi",
+    "ensemble_validation": {
+      "kintsugi_alone": {
+        "pixels": 1357592,
+        "positive_pixels": 316389,
+        "prevalence": 0.23305160902539201,
+        "roc_auc": 0.6253777759555252,
+        "ap": 0.3325401031040034,
+        "best_f1_diagnostic": 0.4088568604159998,
+        "best_threshold_diagnostic": 0.3194018602371216,
+        "threshold": 0.2736363410949707,
+        "tp": 253111,
+        "fp": 675739,
+        "fn": 63278,
+        "precision": 0.27249932712493946,
+        "recall": 0.7999993678667716,
+        "f1": 0.4065259761379141,
+        "fp_per_mpix": 497748.2189052381,
+        "brier": 0.21641767174927903,
+        "false_positive_rate": 0.6489983221331479
+      },
+      "reader_residual": {
+        "pixels": 1357592,
+        "positive_pixels": 316389,
+        "prevalence": 0.23305160902539201,
+        "roc_auc": 0.859915650069736,
+        "ap": 0.7164975494809663,
+        "best_f1_diagnostic": 0.6674628897439725,
+        "best_threshold_diagnostic": 0.49321800470352173,
+        "threshold": 0.3043285310268402,
+        "tp": 253111,
+        "fp": 266539,
+        "fn": 63278,
+        "precision": 0.4870797652265948,
+        "recall": 0.7999993678667716,
+        "f1": 0.6055004611028911,
+        "fp_per_mpix": 196332.18227567634,
+        "brier": 0.12500191475180586,
+        "false_positive_rate": 0.25599138688613077
+      },
+      "reader_kintsugi": {
+        "pixels": 1357592,
+        "positive_pixels": 316389,
+        "prevalence": 0.23305160902539201,
+        "roc_auc": 0.8651384178953875,
+        "ap": 0.7194658895010595,
+        "best_f1_diagnostic": 0.6712986125075407,
+        "best_threshold_diagnostic": 0.3622722029685974,
+        "threshold": 0.21758514642715454,
+        "tp": 253111,
+        "fp": 226931,
+        "fn": 63278,
+        "precision": 0.5272684473441908,
+        "recall": 0.7999993678667716,
+        "f1": 0.6356131290720728,
+        "fp_per_mpix": 167156.99562165953,
+        "brier": 0.11209052191622475,
+        "false_positive_rate": 0.21795077424863354
+      },
+      "reader_kintsugi_fiber": {
+        "pixels": 1357592,
+        "positive_pixels": 316389,
+        "prevalence": 0.23305160902539201,
+        "roc_auc": 0.8670246843675111,
+        "ap": 0.7177198209513742,
+        "best_f1_diagnostic": 0.6715811735118348,
+        "best_threshold_diagnostic": 0.32799041271209717,
+        "threshold": 0.20860540866851807,
+        "tp": 253111,
+        "fp": 218958,
+        "fn": 63278,
+        "precision": 0.5361737373138249,
+        "recall": 0.7999993678667716,
+        "f1": 0.6420405398892521,
+        "fp_per_mpix": 161284.09713669497,
+        "brier": 0.1112182493963617,
+        "false_positive_rate": 0.21029328574735187
+      }
+    },
+    "test_policy": "Candidate fixed using validation only, before test labels or predictions are loaded."
+  }
+}

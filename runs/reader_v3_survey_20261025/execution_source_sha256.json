@@ -1,0 +1,6 @@
+{
+  "scripts/reader_v3_survey.py": "467f0bafb5d80e18b2188e8b8345c498999e44d254bb7eefdd524a3cac083d1d",
+  "scripts/run_controlled_runpod.py": "2e21dcf92848ba6fb412e063183ae4e4eb2a36488b5f523e420828c915a76269",
+  "configs/reader_v3_survey_20261025.json": "1df43af8d07c4a6557becaca59bd73ef2f386ae719a536b021021c39df8c5482",
+  "vesuvius_code/numpy_metrics.py": "0288264dd9b6e5d0b2bb59a197095d58ca91a0a97f5bf0ccabc7ef0ab0dcbcbd"
+}

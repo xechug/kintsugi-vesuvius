@@ -1,0 +1,13 @@
+{
+  "reviewed_at_utc": "2026-10-25T15:16:10.298746+00:00",
+  "method": "Agent visual inspection of CT, both layer orders, fixed and adaptive display windows; local depth and mirror check on segment 03. No papyrologist review.",
+  "conclusion": "No new legible characters identified in this survey. Does not establish absence of ink.",
+  "segments": {
+    "00": "Agrupaciones amplias y bandas; no se identifica una secuencia de caracteres.",
+    "01": "Manchas irregulares en ambas orientaciones; sin trazos legibles suficientes.",
+    "02": "Patrón ortogonal y agrupaciones centrales compatibles con textura o daño; no demuestra tinta.",
+    "03": "Grupo forward inferior comprobado con profundidad y reflejos: persiste sin formar letras legibles.",
+    "04": "Manchas aisladas y agrupaciones junto a irregularidades; sin caracteres defendibles.",
+    "05": "Segmento pequeño con manchas amplias; contexto insuficiente para identificar escritura."
+  }
+}

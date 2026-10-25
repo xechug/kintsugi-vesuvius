@@ -1,0 +1,12 @@
+{
+  "torch_version": "2.8.0+cu128",
+  "cuda_version": "12.8",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "source_sha256": {
+    "scripts/controlled_ink_benchmark.py": "e14042ecc551cf146627e12c2004badae0354028cc810f5f499eacd82f6b1d39",
+    "vesuvius_code/baselines.py": "5f1663353a9eba3e478e5e751dcf4c17deeb9b686bdf3dc73de1c0552d4f29a4",
+    "vesuvius_code/losses.py": "855f0ac5e63a8a5186967f1d6d8732b291fed077262e47bd19bc24aed9efe1ff",
+    "vesuvius_code/numpy_metrics.py": "0288264dd9b6e5d0b2bb59a197095d58ca91a0a97f5bf0ccabc7ef0ab0dcbcbd"
+  }
+}
